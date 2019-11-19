@@ -203,7 +203,7 @@ def partition(cost_c, cost_f, capacity, customers, sizes):
     #print(solution)
     I = len(I);
     J = len(J);
-    write_file("solution.csv", solution, two_d=False)
+    #write_file("solution.csv", solution, two_d=False)
     connect = np.reshape(solution[0:I*J],(I,J), order='F')
     open    = solution[I*J:I*J+J]
 

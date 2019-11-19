@@ -62,7 +62,7 @@ compute_diss = function(connect.df, facility.df) {
   truck.cost = as.matrix(truck.cost, nrow=1)
   truck.cost = rbind(truck.cost, truck.cost, truck.cost)
 
-  connect.demand = as.matrix(connect.d.df*get_demand() / 20000)
+  connect.demand = as.matrix(connect.d.df*get_demand() / 20000) # divide by the carrying capacity of a truck
   demand.mat = connect.demand
   for (col in 2:ncol(connect.mat)) {
     demand.mat = cbind(demand.mat, connect.demand)
@@ -75,8 +75,6 @@ compute_diss = function(connect.df, facility.df) {
   #  }
   #}
 
-  print(dim(connect.mat))
-  print(dim(demand.mat))
   connect = sweep(connect.mat, MARGIN=c(1,2), as.array(as.matrix(demand.mat)), FUN="+")
 
   print("... connect cost done")

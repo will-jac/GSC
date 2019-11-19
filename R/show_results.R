@@ -4,9 +4,6 @@ show_results = function(customer.df, facility.df, connect, open, numSizes) {
   #connect <- read.csv(file=connect_filename, header=FALSE, sep=",")
   #open <- read.csv(file=open_filename, header=FALSE, sep=",")
 
-  print(dim(connect))
-  print(dim(open))
-
   plot(customer.df$x, customer.df$y, asp=1, type = "n")
 
   mod = length(facility.df$x)
@@ -18,8 +15,8 @@ show_results = function(customer.df, facility.df, connect, open, numSizes) {
   ## we'll be indexing into this via the d variable
   min = min(customer.df$d)
   max = max(customer.df$d)
-  n = 10 ## manually set - this sets the max cex size
-  sizeRange = seq(from = min, to = max, by = (max - min) / n)
+  n = 5 ## manually set - this sets the max cex size
+  sizeRange = pracma::logspace(min, max, n)
 
 
   find_size = function(d, range) {
@@ -67,7 +64,9 @@ show_results = function(customer.df, facility.df, connect, open, numSizes) {
       if (k == 0) {
         k = mod
       }
-      points(facility.df$x[k], facility.df$y[k], pch=".", cex = sizes[ceiling(i / mod)], col=colors[k])
+      size = sizes[ceiling(i / mod)]
+      points(facility.df$x[k], facility.df$y[k], pch=".", cex=size, col=colors[k])
+      points(facility.df$x[k], facility.df$y[k], pch=22,  cex=size / 5 , col="black")
 
     }
     i = i + 1

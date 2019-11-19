@@ -14,11 +14,15 @@ load_data = function(filename, reduceByFacility=1000, reduceByClient=100, dropZe
   x = dimms[1]
   y = dimms[2]
 
+  x.c = x / reduceByClient
+  y.c = y / reduceByClient
+  x.f = x / reduceByFacility
+  y.f = y / reduceByFacility
 
 
   # subset it into something more granular
-  rc = raster::aggregate(data.raster, fun="sum", fact=c(x/reduceByClient, y/reduceByClient))
-  rf = raster::aggregate(data.raster, fun="sum", fact=c(x/reduceByFacility, y/reduceByFacility))
+  rc = raster::aggregate(data.raster, fun="sum", fact=c(x.c, y.c))
+  rf = raster::aggregate(data.raster, fun="sum", fact=c(x.f, y.f))
   #print("dimensions")
   #print(dim(rc))
   #print(dim(rf))
