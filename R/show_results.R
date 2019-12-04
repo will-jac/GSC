@@ -13,11 +13,17 @@ show_results = function(customer.df, facility.df, connect, open, numSizes) {
   # display customers connecting
   ## get an array of sizes to index into
   ## we'll be indexing into this via the d variable
-  min = min(customer.df$d)
-  max = max(customer.df$d)
-  n = 5 ## manually set - this sets the max cex size
-  sizeRange = pracma::logspace(min, max, n)
+  #min = min(customer.df$d)
+  #max = max(customer.df$d)
+  #avg = avg(customer.df$d)
+  #n = 5 ## manually set - this sets the max cex size
+  #sizeRange = pracma::linspace(0, 2*avg, n + 1)
+# sizeRange = pracma::logspace(min, max, n)
+  # remove the last element from the vector
+  #sizeRange = sizeRange[c(1, n)]
 
+  #sizeRange = pracma::logspace(0, 6, 10)
+  sizeRange = pracma::linspace(0,  max(customer.df$d), 10)
 
   find_size = function(d, range) {
     size = 1
@@ -42,6 +48,7 @@ show_results = function(customer.df, facility.df, connect, open, numSizes) {
           k = mod
         }
         customer_size = find_size(customer.df$d[i], sizeRange)
+        #print(paste(customer.df$d[i], customer_size, sep=","))
 
         points(customer.df$x[i], customer.df$y[i], col=colors[k], cex = customer_size)
         #lines(c(customer.df$x[i], facility.df$x[k]), c(customer.df$y[i], facility.df$y[k]), col="red")

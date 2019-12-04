@@ -1,10 +1,16 @@
+package <- new.env(parent=emptyenv())
 
+# $ / metric ton CO2
+package$EMISSIONS_PRICE_TON <- 500
+package$private_emissions_per_ton <- package$EMISSIONS_PRICE_TON / 1000 # $ / kg CO2
+package$OPERATING_COST_INDICATOR <- 1
+package$DEMAND <- 18
 
 #'Returns the demand (kg of products a customer purchases in a period)
 #' @keywords demand
 #' @return The demand
 get_demand = function() {
-  return(18)
+  return(package$DEMAND)
 }
 #'Returns the floor sizes of the facilities (ft^2)
 #' @keywords floor sizes store
@@ -29,7 +35,11 @@ get_store_capacities = function() {
 #' @export
 #' @return the cost per size of the facility
 get_costs_per_size = function() {
-   return(sapply(get_floor_sizes(), FUN=store_cost_foot))
+   return(sapply(get_floor_sizes(), FUN=GSC::store_cost_meter))
+}
+
+num_sizes = function() {
+  return(3)
 }
 
 # Cost functions
@@ -49,19 +59,32 @@ vehicle_cost = function(v, f, p_f, e, p_e, q) {
   return((v+(f*(p_f+e*p_e)))/q)
 }
 
+package$car_v = 0.0804
+package$car_f = 0.111
+package$car_p_f = 0.98
+package$car_e = 2.325
+package$car_q = package$DEMAND
+
 #'calculates the cost for a car, given a distance Units: $ / (Kg*Km)
 #' @param d the distance the car travels (in Km)
 #' @export
 #' @keywords vehichle car cost
 #' @return the car cost for d distance
 car_cost = function(d) {
-  v = 0.0804
-  f = 0.111
-  p_f = 0.98
-  e = 2.325
-  q = get_demand()
-  return(d*vehicle_cost(v, f, p_f, e, p_e=1, q))
+  return(2*d*vehicle_cost(
+    package$OPERATING_COST_INDICATOR * package$car_v,
+    package$car_f,
+    package$OPERATING_COST_INDICATOR * package$car_p_f,
+    package$car_e,
+    p_e=package$private_emissions_per_ton,
+    package$car_q))
 }
+
+package$truck_v = 0.484
+package$truck_f = 0.392
+package$truck_p_f = 1.05
+package$truck_e = 2.669
+package$truck_q_t = 20000
 
 #'calculates the cost for a truck, given a distance. Units: $ / (Kg*Km)
 #' @param d the distance the truck travels (in Km)
@@ -69,47 +92,62 @@ car_cost = function(d) {
 #' @keywords vehichle truck cost
 #' @return the truck cost for d distance
 truck_cost = function(d) {
-  v = 0.484
-  f = 0.392
-  p_f = 1.05
-  e = 2.669
-  q_t = 20000
-  return(d*vehicle_cost(v, f, p_f, e, p_e=1, q_t))
+  return(2*d*vehicle_cost(
+    package$OPERATING_COST_INDICATOR* package$truck_v,
+    package$truck_f,
+    package$OPERATING_COST_INDICATOR * package$truck_p_f,
+    package$truck_e,
+    p_e=package$private_emissions_per_ton,
+    package$truck_q_t))
 }
 
-#'calculates the space cost for a facility. Units: $
+truck_capacity = function() {
+  return(package$truck_q_t)
+}
+
+#'calculates the space cost for a facility. Units: $ / kg
 #' @param v variable space cost (eg rent) / time
 #' @param f amount of energy / time
 #' @param p_f price of energy ($ / unit of energy)
 #' @param e amount of emissions / unit of energy
 #' @param p_e price of emissions
 #' @keywords store cost
-#' @return the truck cost for d distance
+#' @return the space cost
 space_cost = function(v, f, p_f, e, p_e, q) {
   return(v+(f*(p_f+e*p_e)) / q)
 }
 
+package$store_v = 212.8
+package$store_f = 1      #this is already multiplied into e and p_f
+package$store_p_f = 22.9
+package$store_e = 126.1
+package$store_q = 141
+
+period = 52
+
 # $ / kg
 store_cost = function(t) {
-  v = 212.8
-  fe  = 126.1
-  fp = 22.9
-  q = 141
-  return(t*space_cost(v, f=1, fp, fe, p_e=1, q))
+  return(period*space_cost(
+    package$OPERATING_COST_INDICATOR * package$store_v,
+    package$store_f,
+    package$OPERATING_COST_INDICATOR * package$store_p_f,
+    package$store_e,
+    p_e=package$private_emissions_per_ton,
+    package$store_q))
 }
 
-#'calculates the space cost for a facility. Units: $ / sqft
+#'calculates the space cost for a facility. Units: $
 #' @keywords store space cost
 #' @export
-#' @return the truck cost for d distance
-store_cost_foot = function(sq_ft) {
-  ## TODO: verify all of these
-  v = 212.8
-  fe  = 126.1
-  fp = 22.9
-  q = 141
-  t = 1 # period
-  return(t*sq_ft*space_cost(v, f=1, fp, fe, p_e=1, q))
+#' @return the space cost per sq meters
+store_cost_meter = function(sq_meter) {
+  return(period * sq_meter * space_cost(
+    package$store_v,
+    package$store_f,
+    package$store_p_f,
+    package$store_e,
+    p_e=package$private_emissions_per_ton,
+    package$store_q))
 }
 
 #'calculates the cost per kg / period

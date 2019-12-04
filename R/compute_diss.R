@@ -2,6 +2,9 @@
 
 compute_diss = function(connect.df, facility.df) {
 
+  print(package$OPERATING_COST_INDICATOR)
+  print(package$EMISSIONS_PRICE_TON)
+
   sizes = get_store_capacities()
   max_store_size = sizes[length(sizes)]
 
@@ -59,22 +62,18 @@ compute_diss = function(connect.df, facility.df) {
   connect.mat = sweep(connect.mat, MARGIN=1, as.array(as.matrix(connect.d.df)), FUN="*")
 
   # compute the truck cost, add it to the car cost
-  truck.cost = as.matrix(truck.cost, nrow=1)
-  truck.cost = rbind(truck.cost, truck.cost, truck.cost)
-
-  connect.demand = as.matrix(connect.d.df*get_demand() / 20000) # divide by the carrying capacity of a truck
+  truck.cost.row = as.matrix(truck.cost, nrow=1)
+  truck.cost = truck.cost.row
+  for (col in 2:num_sizes()) {
+    truck.cost = rbind(truck.cost.row)
+  }
+  connect.demand = as.matrix(connect.d.df*get_demand() / truck_capacity()) # divide by the carrying capacity of a truck
   demand.mat = connect.demand
   for (col in 2:ncol(connect.mat)) {
     demand.mat = cbind(demand.mat, connect.demand)
   }
-
-  #for (col in 1:ncol(connect.mat)) {
-  #  for (row in 1:nrow(connect.mat)) {
-  #    # divide by the amount a truck can carry
-  #    connect.mat[row,col] = connect.mat[row,col] + (get_demand() * connect.d.df[row, 1] / 20000) * truck.cost[col]
-  #  }
-  #}
-
+  # compute the 'base' connect cost (customer cost) plus the partial truck cost
+  # ( cost_car(dist_cust_store) * num_people ) + ( cost_truck(dist_truck_store) * (num_people * demand) / cost_truck )
   connect = sweep(connect.mat, MARGIN=c(1,2), as.array(as.matrix(demand.mat)), FUN="+")
 
   print("... connect cost done")
@@ -87,7 +86,6 @@ compute_diss = function(connect.df, facility.df) {
   for (row in 2:nrow(facility.mat)) {
     facility.cost = cbind(facility.cost, get_costs_per_size())
   }
-
   ## store capacities
   facility.size = matrix( get_store_capacities(), ncol = 1)
   for (row in 2:nrow(facility.mat)) {
@@ -98,6 +96,9 @@ compute_diss = function(connect.df, facility.df) {
   #write.csv(as.matrix(facility.cost), file="facility_cost.csv", row.names = FALSE)
   #write.csv(as.matrix(facility.size), file="facility_capacity.csv", row.names = FALSE)
   #write.csv(as.matrix(connect.d.df), file="customer_size.csv", row.names=FALSE)
+
+  print(package$OPERATING_COST_INDICATOR)
+  print(package$EMISSIONS_PRICE_TON)
 
   return (list('f' = as.matrix(facility.cost), 'c'=as.matrix(connect), 's'=as.matrix(facility.size), 'd' = as.matrix(connect.d.df)))
 }

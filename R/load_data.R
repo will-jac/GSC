@@ -1,6 +1,6 @@
 filename = "C:/Users/Jack/College/Fall2019/Green-Supply-Chain/code/data/geotiff/hrsl_pri_pop.tif"
 
-load_data = function(filename, reduceByFacility=1000, reduceByClient=100, dropZeros=TRUE, ...) {
+load_data = function(filename, reduceByFacility=100, reduceByClient=1000, dropZeros=TRUE, ...) {
   print("loading data")
   # look in the current directory
   data.raster <- raster::raster(filename)
@@ -10,9 +10,12 @@ load_data = function(filename, reduceByFacility=1000, reduceByClient=100, dropZe
   # project it into km!
   data.raster <-raster::projectRaster(data.raster, crs=crs)
 
+  # we expect 30 m by 30 m resolution
+
   dimms = dim(data.raster)
   x = dimms[1]
   y = dimms[2]
+
 
   x.c = x / reduceByClient
   y.c = y / reduceByClient
@@ -38,5 +41,5 @@ load_data = function(filename, reduceByFacility=1000, reduceByClient=100, dropZe
 
   print(paste("customers:", length(data.df$x), "facilities:", length(reduced.df$x),  sep=" "))
 
-  return(list("data.df" = data.df, "reduced.df" = reduced.df))
+  return(list("customer.df" = data.df, "facility.df" = reduced.df))
 }

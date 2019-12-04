@@ -81,7 +81,7 @@ def read_and_partition():
     parition(cost_c, cost_f, capacity, num_customers, sizes)
 
 
-def partition(cost_c, cost_f, capacity, customers, sizes):
+def partition(cost_c, cost_f, capacity, customers, sizes, sol_lim=10, time_lim=60*60, optim_lim=0.1, emphasis=0):
     print('Partitioning the network...', flush=True)
 
     num_f = len(cost_f)
@@ -101,11 +101,16 @@ def partition(cost_c, cost_f, capacity, customers, sizes):
     # Create the modeler/solver.
     cpx = cplex.Cplex()
     cpx.objective.set_sense(cpx.objective.sense.minimize)
-    #cpx.parameters.preprocessing.relax = 0
+
+    # if not feas:
+    #     cpx.parameters.preprocessing.relax.set(0)
     #cpx.parameters.preprocessing.presolve.set(0)
 
-    #cpx.parameters.simplex.tolerances.optimality = float(0.1)
-    #cpx.parameters.simplex.tolerances.optimality.set(0.05)
+    # cpx.parameters.mip.limits.solutions.set(sol_lim)
+    cpx.parameters.timelimit.set(time_lim)
+    # cpx.parameters.simplex.tolerances.optimality.set(optim_lim)
+
+    cpx.parameters.emphasis.mip.set(emphasis)
 
     # Create variables. We have variables
     # F[j]        if facility j is open.
@@ -192,10 +197,11 @@ def partition(cost_c, cost_f, capacity, customers, sizes):
 
     try:
         solution = cpx.solution.get_values()
+        print(cpx.getStatus(), flush=True)
     except:
         print("--------------------------------------------")
         print("No solution exists!! Attempting optimization")
-        print("--------------------------------------------")
+        print("--------------------------------------------", flush=True)
         cpx.feasopt(cpx.feasopt.all_constraints())
         solution = cpx.solution.get_values()
 
