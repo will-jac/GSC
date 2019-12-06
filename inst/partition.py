@@ -2,8 +2,23 @@ import sys
 import numpy as np
 
 import cplex
+from cplex.callbacks import MIPInfoCallback
+
 
 import csv
+
+
+class TimeLimitCallback(MIPInfoCallback):
+
+    def __call__(self):
+        if not self.aborted and self.has_incumbent():
+            gap = 100.0 * self.get_MIP_relative_gap()
+            timeused = self.get_time() - self.starttime
+            if timeused > self.timelimit and gap < self.acceptablegap:
+                print("Good enough solution at", timeused, "sec., gap =",
+                      gap, "%, quitting.")
+                self.aborted = True
+                self.abort()
 
 def write_file(filename, array, two_d=True):
    with open(filename, mode='w') as file:
@@ -106,11 +121,20 @@ def partition(cost_c, cost_f, capacity, customers, sizes, sol_lim=10, time_lim=6
     #     cpx.parameters.preprocessing.relax.set(0)
     #cpx.parameters.preprocessing.presolve.set(0)
 
-    # cpx.parameters.mip.limits.solutions.set(sol_lim)
-    cpx.parameters.timelimit.set(time_lim)
+    cpx.parameters.mip.limits.solutions.set(sol_lim)
+    # cpx.parameters.timelimit.set(time_lim)
     # cpx.parameters.simplex.tolerances.optimality.set(optim_lim)
+    # cpx.parameters.preprocessing.symmetry=2
 
     cpx.parameters.emphasis.mip.set(emphasis)
+
+    # register our timer
+    # timelim_cb = cpx.register_callback(TimeLimitCallback)
+    # timelim_cb.starttime = cpx.get_time()
+    # timelim_cb.timelimit = time_lim
+    # timelim_cb.acceptablegap = optim_lim
+    # timelim_cb.aborted = False
+
 
     # Create variables. We have variables
     # F[j]        if facility j is open.
@@ -197,7 +221,6 @@ def partition(cost_c, cost_f, capacity, customers, sizes, sol_lim=10, time_lim=6
 
     try:
         solution = cpx.solution.get_values()
-        print(cpx.getStatus(), flush=True)
     except:
         print("--------------------------------------------")
         print("No solution exists!! Attempting optimization")

@@ -1,6 +1,6 @@
-test_uniform = function(x=10, y=10, op = 1, em = 1, sol_lim=10, time_lim=60*60, optim_lim=0.01, emphasis=3) {
+test_uniform = function(x=10, y=10, c = 0.5, f = 2, op = 1, em = 1, time_lim=60*60, optim_lim=0.01, emphasis=3, sol_lim=10) {
   #a = GSC::load_data(filename, reduce_by_facility, reduce_by_customer)
-  a = GSC::generate_uniform(incrementByCust=0.5, incrementByFac = 2)
+  a = GSC::generate_uniform(x, y, incrementByCust=c, incrementByFac = f)
 
   package$OPERATING_COST_INDICATOR = op
   package$EMISSIONS_PRICE_TON=em
