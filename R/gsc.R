@@ -1,4 +1,4 @@
-gsc = function(filename=GSC::filename, reduce_by_facility=15, reduce_by_customer=15, sol_lim=10, iter_lim=100000, optim_lim=0.01) {
+gsc = function(filename=GSC::filename, c = 30, f = 15, op = 1, em = 1, time_lim=60*60, optim_lim=0.01, emphasis=3, sol_lim=10) {
   a = GSC::load_data(filename, reduce_by_facility, reduce_by_customer)
   b = GSC::compute_diss(a$customer.df, a$facility.df)
   reticulate::source_python(paste(system.file(package="GSC"), "partition.py", sep="/"))
@@ -10,7 +10,7 @@ gsc = function(filename=GSC::filename, reduce_by_facility=15, reduce_by_customer
   # 1c 2c 3c 4c
   # so as.vector would produce(1a 1b 1c 2a 2b 2c ...), but we want (1a 2a 3a ...)
   # t = transpose
-  c = partition(b$c, as.vector(t(b$f)), as.vector(t(b$s)), as.vector(b$d), 3, sol_lim, iter_lim, optim_lim)
+  c = partition(b$c, as.vector(t(b$f)), as.vector(t(b$s)), as.vector(b$d), 3, sol_lim, time_lim, optim_lim, emphasis)
   GSC::show_results(a$customer.df, a$facility.df, c$connect, c$open, 3)
   return(list('cust.loc'=a$customer.df, 'fac.loc'=a$facility.df, 'connect'=c$connect, 'open'=c$open, 'cost'=c$cost))
 }

@@ -24,8 +24,8 @@ load_data = function(filename, reduceByFacility=100, reduceByClient=1000, dropZe
 
 
   # subset it into something more granular
-  rc = raster::aggregate(data.raster, fun="sum", fact=c(x.c, y.c))
-  rf = raster::aggregate(data.raster, fun="sum", fact=c(x.f, y.f))
+  rc = raster::aggregate(data.raster, fun="sum", fact=reduceByClient)
+  rf = raster::aggregate(data.raster, fun="sum", fact=reduceByFacility)
   #print("dimensions")
   #print(dim(rc))
   #print(dim(rf))

@@ -195,7 +195,7 @@ def partition(cost_c, cost_f, capacity, customers, sizes, sol_lim=10, time_lim=6
 
     # cannot have collocated stores
     # f1 + f2 + f3 <= 1
-    # print([[[F_name(l+(k*num_l)) for k in K], [1 for k in K]] for l in L])
+    #print([[[F_name(l+(k*num_l)) for k in K], [1 for k in K]] for l in L])
     cpx.linear_constraints.add(
         names    = ["col" + F_name(l) for l in L],
         lin_expr = [[[F_name(l+(k*num_l)) for k in K], [1 for k in K]] for l in L],
@@ -239,7 +239,8 @@ def partition(cost_c, cost_f, capacity, customers, sizes, sol_lim=10, time_lim=6
     write_file("connect_sol.csv", connect)
     write_file("open_sol.csv", open, two_d = False)
 
-    print("---------------",flush=True)
+    print("-------------Solution Found-------------", flush=True)
+    cpx.solution.write("model.sol")
 
     cost = 0
 

@@ -1,8 +1,9 @@
 
+show_results_obj = function(result_object) {
+  show_results(result_object$cust.loc, result_object$fac.loc, result_object$connect, result_object$open, 3)
+}
+
 show_results = function(customer.df, facility.df, connect, open, numSizes) {
-  #int read in the files
-  #connect <- read.csv(file=connect_filename, header=FALSE, sep=",")
-  #open <- read.csv(file=open_filename, header=FALSE, sep=",")
 
   plot(customer.df$x, customer.df$y, asp=1, type = "n")
 
@@ -13,16 +14,7 @@ show_results = function(customer.df, facility.df, connect, open, numSizes) {
   # display customers connecting
   ## get an array of sizes to index into
   ## we'll be indexing into this via the d variable
-  #min = min(customer.df$d)
-  #max = max(customer.df$d)
-  #avg = avg(customer.df$d)
-  #n = 5 ## manually set - this sets the max cex size
-  #sizeRange = pracma::linspace(0, 2*avg, n + 1)
-# sizeRange = pracma::logspace(min, max, n)
-  # remove the last element from the vector
-  #sizeRange = sizeRange[c(1, n)]
 
-  #sizeRange = pracma::logspace(0, 6, 10)
   sizeRange = pracma::linspace(0,  max(customer.df$d), 10)
 
   find_size = function(d, range) {
@@ -41,41 +33,36 @@ show_results = function(customer.df, facility.df, connect, open, numSizes) {
   for (i in 1:nrow(connect)) {
     f = FALSE
     for (j in 1:ncol(connect)) {
-      if (connect[i,j] == 1) {
+      if (connect[i,j]) {
         f = TRUE
         k = j %% mod
         if (k == 0) {
           k = mod
         }
         customer_size = find_size(customer.df$d[i], sizeRange)
-        #print(paste(customer.df$d[i], customer_size, sep=","))
 
         points(customer.df$x[i], customer.df$y[i], col=colors[k], cex = customer_size)
         #lines(c(customer.df$x[i], facility.df$x[k]), c(customer.df$y[i], facility.df$y[k]), col="red")
         break
       }
     }
-    #if (f == FALSE) {
-    #  print(i)
-    #}
+    if (f == FALSE) {
+      points(customer.df$x[i], customer.df$y[i])
+    }
   }
 
   # display the open facilities
-  k = -1
-  i = 1
   sizes = c(5, 10, 15)
-  for (facility in open) {
-    #print(facility)
-    if (facility == 1) {
-      k = (i %% mod) + 1
+  i = 1
+  for (i in i:length(open)) {
+    if (open[i]) {
+      k = i %% mod
       if (k == 0) {
         k = mod
       }
       size = sizes[ceiling(i / mod)]
       points(facility.df$x[k], facility.df$y[k], pch=".", cex=size, col=colors[k])
       points(facility.df$x[k], facility.df$y[k], pch=22,  cex=size / 5 , col="black")
-
     }
-    i = i + 1
   }
 }

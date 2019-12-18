@@ -12,13 +12,17 @@ package$DEMAND <- 18
 get_demand = function() {
   return(package$DEMAND)
 }
-#'Returns the floor sizes of the facilities (ft^2)
+#'Returns the floor sizes of the facilities (m^2)
 #' @keywords floor sizes store
 #' @export
 #' @examples
-#' @return the floor sizes of the facilities (ft^2)
+#' @return the floor sizes of the facilities (m^2)
 get_floor_sizes = function(){
-  return(c(50000, 100000, 200000))
+  # supercenter  = 16500 sq meters, 120000 'items'
+  # regular      = 9800 sq meters
+  # neighborhood = 3900 sq meters
+  return (c(3900, 9800, 16500))
+  #return(c(50000, 100000, 200000))
 }
 
 #'Returns the capacities of the facilities (number of people)
@@ -27,7 +31,12 @@ get_floor_sizes = function(){
 #' @examples
 #' @return the capacities of the facilities
 get_store_capacities = function() {
-  return(c(5000, 50000, 500000))
+  # supercenter  = 100,000
+  # regular      = 30,000
+  # neighborhood = 5,000
+  return(c(5000, 50000, 300000))
+
+  #return(c(5000, 50000, 500000))
 }
 
 #'Returns the costs per size of the facility ($ / ft^2)

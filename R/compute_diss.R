@@ -1,5 +1,4 @@
 
-
 compute_diss = function(connect.df, facility.df) {
 
   print(package$OPERATING_COST_INDICATOR)
@@ -31,7 +30,10 @@ compute_diss = function(connect.df, facility.df) {
 
   w = matrix(w, ncol=2)
 
-  truck.cost = apply(facility.mat, 1, function(row) { sqrt(rowSums((row - w)^2)) })
+  # euclidean distance
+  # can also use the manhattan distance
+  truck.dist = apply(facility.mat, 1, function(row) { sqrt(rowSums((row - w)^2)) })
+  truck.cost = apply(as.matrix(truck.dist), MARGIN = c(1,2), FUN=GSC::truck_cost)
 
   print("... warehouse located")
 
@@ -47,38 +49,49 @@ compute_diss = function(connect.df, facility.df) {
 
   # compute the car cost
   car_demand_cost = function(d) {
-    return(get_demand() * (car_cost(d)))
+    return(GSC::get_demand() * GSC::car_cost(d))
   }
 
   connect.mat[] = vapply(connect.mat, car_demand_cost, numeric(1))
+  print("... car cost done")
+
+  # compute the partial truck cost and add it to the car cost
+  cust_amt = connect.d.df * GSC::get_demand() / GSC::truck_capacity()
+  truck = truck.cost * cust_amt[1, 1]
+  for (i in 2:nrow(cust_amt)) {
+    truck = cbind(truck, truck.cost * cust_amt[i, 1])
+  }
+  connect.mat = connect.mat + t(truck)
+
+  # multiply by number of people at a location
+  # connect = num_people * (car_cost_per_person + truck_cost_per_person)
+  connect.mat = sweep(connect.mat, MARGIN=1, as.array(as.matrix(connect.d.df)), FUN="*")
 
   # three times for the three store sizes
-  connect.mat = cbind(connect.mat, connect.mat, connect.mat)
+  connect = cbind(connect.mat, connect.mat, connect.mat)
 
-  print("... car cost done")
+
 
   # multiply by demand in the area
 
-  connect.mat = sweep(connect.mat, MARGIN=1, as.array(as.matrix(connect.d.df)), FUN="*")
 
   # compute the truck cost, add it to the car cost
-  truck.cost.row = as.matrix(truck.cost, nrow=1)
-  truck.cost = truck.cost.row
-  for (col in 2:num_sizes()) {
-    truck.cost = rbind(truck.cost.row)
-  }
-  connect.demand = as.matrix(connect.d.df*get_demand() / truck_capacity()) # divide by the carrying capacity of a truck
-  demand.mat = connect.demand
-  for (col in 2:ncol(connect.mat)) {
-    demand.mat = cbind(demand.mat, connect.demand)
-  }
-  # compute the 'base' connect cost (customer cost) plus the partial truck cost
-  # ( cost_car(dist_cust_store) * num_people ) + ( cost_truck(dist_truck_store) * (num_people * demand) / cost_truck )
-  connect = sweep(connect.mat, MARGIN=c(1,2), as.array(as.matrix(demand.mat)), FUN="+")
+  # truck.cost.row = as.matrix(truck.cost, nrow=1)
+  # truck.cost = truck.cost.row
+  # for (col in 2:num_sizes()) {
+  #   truck.cost = rbind(truck.cost, truck.cost.row)
+  #}
+
+  #connect.demand = as.matrix(connect.d.df*get_demand() / truck_capacity()) # divide by the carrying capacity of a truck
+  #demand.mat = connect.demand * truck.cost
+  #for (col in 2:ncol(connect.mat)) {
+  #  demand.mat = cbind(demand.mat, connect.demand)
+  #}
+
+  # add the connect cost (customer cost) to the partial truck cost
+  #connect = sweep(connect.mat, MARGIN=c(1,2), as.array(as.matrix(demand.mat)), FUN="+")
 
   print("... connect cost done")
-
-
 
   ## compute the facility cost matrix
   ## every facility location gets k possible facilities
@@ -96,9 +109,6 @@ compute_diss = function(connect.df, facility.df) {
   #write.csv(as.matrix(facility.cost), file="facility_cost.csv", row.names = FALSE)
   #write.csv(as.matrix(facility.size), file="facility_capacity.csv", row.names = FALSE)
   #write.csv(as.matrix(connect.d.df), file="customer_size.csv", row.names=FALSE)
-
-  print(package$OPERATING_COST_INDICATOR)
-  print(package$EMISSIONS_PRICE_TON)
 
   return (list('f' = as.matrix(facility.cost), 'c'=as.matrix(connect), 's'=as.matrix(facility.size), 'd' = as.matrix(connect.d.df)))
 }
