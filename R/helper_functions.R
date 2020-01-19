@@ -2,7 +2,6 @@ package <- new.env(parent=emptyenv())
 
 # $ / metric ton CO2
 package$EMISSIONS_PRICE_TON <- 500
-package$private_emissions_per_ton <- package$EMISSIONS_PRICE_TON / 1000 # $ / kg CO2
 package$OPERATING_COST_INDICATOR <- 1
 package$DEMAND <- 18
 
@@ -85,7 +84,7 @@ car_cost = function(d) {
     package$car_f,
     package$OPERATING_COST_INDICATOR * package$car_p_f,
     package$car_e,
-    p_e=package$private_emissions_per_ton,
+    p_e=package$EMISSIONS_PRICE_TON / 1000,
     package$car_q))
 }
 
@@ -106,7 +105,7 @@ truck_cost = function(d) {
     package$truck_f,
     package$OPERATING_COST_INDICATOR * package$truck_p_f,
     package$truck_e,
-    p_e=package$private_emissions_per_ton,
+    p_e=package$EMISSIONS_PRICE_TON / 1000,
     package$truck_q_t))
 }
 
@@ -141,7 +140,7 @@ store_cost = function(t) {
     package$store_f,
     package$OPERATING_COST_INDICATOR * package$store_p_f,
     package$store_e,
-    p_e=package$private_emissions_per_ton,
+    p_e=package$EMISSIONS_PRICE_TON / 1000,
     package$store_q))
 }
 
@@ -151,11 +150,11 @@ store_cost = function(t) {
 #' @return the space cost per sq meters
 store_cost_meter = function(sq_meter) {
   return(period * sq_meter * space_cost(
-    package$store_v,
+    package$OPERATING_COST_INDICATOR * package$store_v,
     package$store_f,
-    package$store_p_f,
+    package$OPERATING_COST_INDICATOR * package$store_p_f,
     package$store_e,
-    p_e=package$private_emissions_per_ton,
+    p_e=package$EMISSIONS_PRICE_TON / 1000,
     package$store_q))
 }
 

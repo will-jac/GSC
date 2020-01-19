@@ -1,4 +1,4 @@
-do_batch = function(filename=GSC::filename, c = 30, f = 15, em = 100, time_lim=60*60, optim_lim=0.01, emphasis=3, sol_lim=10) {
+do_batch = function(filename=GSC::filename, c = 200, f = 400, em = 100, time_lim=60*60, optim_lim=0.01, emphasis=3, sol_lim=10) {
   a = load_data(filename, f, c)
   write.csv(as.matrix(a$customer.df), file="customer_data.csv", row.names=FALSE)
   write.csv(as.matrix(a$facility.df), file="facility_data.csv", row.names=FALSE)
@@ -29,17 +29,17 @@ do_batch = function(filename=GSC::filename, c = 30, f = 15, em = 100, time_lim=6
 
   reticulate::source_python(paste(system.file(package="GSC"), "partition.py", sep="/"))
 
-  c1 = partition(b1$c, as.vector(t(b1$f)), as.vector(t(b1$s)), as.vector(b1$d), 3, sol_lim, time_lim, optim_lim)
+  c1 = partition(b1$c, as.vector(t(b1$f)), as.vector(t(b1$s)), as.vector(b1$d), 3, sol_lim, time_lim, optim_lim, emphasis)
   write.csv(as.matrix(c1$open), file="c1-open.csv", row.names=FALSE)
   write.csv(as.matrix(c1$connect), file="c1-connect.csv", row.names=FALSE)
   write.csv(as.matrix(c1$cost), file="c1-cost.csv", row.names=FALSE)
 
-  c2 = partition(b2$c, as.vector(t(b2$f)), as.vector(t(b2$s)), as.vector(b2$d), 3, sol_lim, time_lim, optim_lim)
+  c2 = partition(b2$c, as.vector(t(b2$f)), as.vector(t(b2$s)), as.vector(b2$d), 3, sol_lim, time_lim, optim_lim, emphasis)
   write.csv(as.matrix(c2$open), file="c2-open.csv", row.names=FALSE)
   write.csv(as.matrix(c2$connect), file="c2-connect.csv", row.names=FALSE)
   write.csv(as.matrix(c2$cost), file="c2-cost.csv", row.names=FALSE)
 
-  c3 = partition(b3$c, as.vector(t(b3$f)), as.vector(t(b3$s)), as.vector(b3$d), 3, sol_lim, time_lim, optim_lim)
+  c3 = partition(b3$c, as.vector(t(b3$f)), as.vector(t(b3$s)), as.vector(b3$d), 3, sol_lim, time_lim, optim_lim, emphasis)
   write.csv(as.matrix(c3$open), file="c3-open.csv", row.names=FALSE)
   write.csv(as.matrix(c3$connect), file="c3-connect.csv", row.names=FALSE)
   write.csv(as.matrix(c3$cost), file="c3-cost.csv", row.names=FALSE)
@@ -47,9 +47,9 @@ do_batch = function(filename=GSC::filename, c = 30, f = 15, em = 100, time_lim=6
 
   return (
     list(
-      "operating"=list('cust.loc'=a$customer.df, 'fac.loc'=a$facility.df, 'connect' = c1$connect, 'open' = c1$open, 'cost'=c1$cost),
-      "hybrid"   =list('cust.loc'=a$customer.df, 'fac.loc'=a$facility.df, 'connect' = c2$connect, 'open' = c2$open, 'cost'=c2$cost),
-      "emissions"=list('cust.loc'=a$customer.df, 'fac.loc'=a$facility.df, 'connect' = c3$connect, 'open' = c3$open, 'cost'=c3$cost)
+      "operating"=list('cust.loc'=a$customer.df, 'fac.loc'=a$facility.df, 'connect' = c1$connect, 'open' = c1$open, 'cost'=c1$cost, 'cust.cost' = b1$c, 'fac.cost' = b1$f),
+      "hybrid"   =list('cust.loc'=a$customer.df, 'fac.loc'=a$facility.df, 'connect' = c2$connect, 'open' = c2$open, 'cost'=c2$cost, 'cust.cost' = b2$c, 'fac.cost' = b2$f),
+      "emissions"=list('cust.loc'=a$customer.df, 'fac.loc'=a$facility.df, 'connect' = c3$connect, 'open' = c3$open, 'cost'=c3$cost, 'cust.cost' = b3$c, 'fac.cost' = b3$f)
     )
   )
 }

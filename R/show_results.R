@@ -1,6 +1,13 @@
 
+show_results_dir = function(num) {
+  name = paste('c', num, sep='')
+  conn = paste(name, '-connect.csv', sep='')
+  open = paste(name, '-open.csv', sep='')
+  GSC::show_results(read.csv('customer_data.csv'), read.csv('facility_data.csv'), as.matrix(read.csv(conn)), t(as.vector(read.csv(open))))
+}
+
 show_results_obj = function(result_object) {
-  show_results(result_object$cust.loc, result_object$fac.loc, result_object$connect, result_object$open, 3)
+  GSC::show_results(result_object$cust.loc, result_object$fac.loc, result_object$connect, result_object$open, 3)
 }
 
 show_results = function(customer.df, facility.df, connect, open, numSizes) {
