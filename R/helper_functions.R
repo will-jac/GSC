@@ -67,6 +67,7 @@ vehicle_cost = function(v, f, p_f, e, p_e, q) {
   return((v+(f*(p_f+e*p_e)))/q)
 }
 
+package$car_coef = 1
 package$car_v = 0.0804
 package$car_f = 0.111
 package$car_p_f = 0.98
@@ -79,7 +80,7 @@ package$car_q = package$DEMAND
 #' @keywords vehichle car cost
 #' @return the car cost for d distance
 car_cost = function(d) {
-  return(2*d*vehicle_cost(
+  return(car_coef*2*d*vehicle_cost(
     package$OPERATING_COST_INDICATOR * package$car_v,
     package$car_f,
     package$OPERATING_COST_INDICATOR * package$car_p_f,
@@ -88,6 +89,7 @@ car_cost = function(d) {
     package$car_q))
 }
 
+package$truck_coef = 1
 package$truck_v = 0.484
 package$truck_f = 0.392
 package$truck_p_f = 1.05
@@ -100,7 +102,7 @@ package$truck_q_t = 20000
 #' @keywords vehichle truck cost
 #' @return the truck cost for d distance
 truck_cost = function(d) {
-  return(2*d*vehicle_cost(
+  return(truck_coef*2*d*vehicle_cost(
     package$OPERATING_COST_INDICATOR* package$truck_v,
     package$truck_f,
     package$OPERATING_COST_INDICATOR * package$truck_p_f,

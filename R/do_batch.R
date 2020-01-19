@@ -44,7 +44,6 @@ do_batch = function(filename=GSC::filename, c = 200, f = 400, em = 100, time_lim
   write.csv(as.matrix(c3$connect), file="c3-connect.csv", row.names=FALSE)
   write.csv(as.matrix(c3$cost), file="c3-cost.csv", row.names=FALSE)
 
-
   return (
     list(
       "operating"=list('cust.loc'=a$customer.df, 'fac.loc'=a$facility.df, 'connect' = c1$connect, 'open' = c1$open, 'cost'=c1$cost, 'cust.cost' = b1$c, 'fac.cost' = b1$f),
