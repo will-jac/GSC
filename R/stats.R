@@ -1,87 +1,50 @@
-stats = function(gsc_obj, num_sizes = 3) {
-  stats = list("connect" = gsc_obj$cost, "stores" = store_stats(gsc_obj), "customers" = nrow(gsc_obj$connect))
-}
 
-customer_stats = function(gsc_obj, k) {
 
-}
-
-store_stats = function(gsc_obj, k) {
-  x = length(gsc_obj$open) / k
-  z = sum(gsc_obj$open[1:(2*x)])
-  y = c(z)
-  stats = list("length" = sum(gsc_obj$open))
-  stats = append(stats, z)
-  for (i in 1:k) {
-    z = sum(gsc_obj$open[((k-1)*x):(k*x)])
-    y = append(y, z)
-    stats = append(stats, z)
-  }
-  # this comes from compute_diss
-  w = matrix(locate_warehouse(facility.df), ncol=2)
-  # euclidean distance
-  # can also use the manhattan distance
-  truck.dist = apply(facility.mat, 1, function(row) { sqrt(rowSums((row - w)^2)) })
-  truck.dist =
-  stats = append(stats, "avg_size" = sum(y*c(1:k) / sum(y)))
-  return(stats)
-}
-
-num_stores = function(gsc_batch_obj) {
-  return(list(
-    "emissions" = num_stores_indiv(gsc_batch_obj$emissions),
-    "hybrid"    = num_stores_indiv(gsc_batch_obj$hybrid),
-    "operating" = num_stores_indiv(gsc_batch_obj$operating)
+batch_stats = function(results_list) {
+  return (data.frame(
+    stores = GSC::num_stores(results_list),
+    em_cost = GSC::emissions_cost(results_list),
+    op_cost = GSC::operating_cost(results_list)
   ))
 }
 
-num_stores_indiv = function(gsc_obj) {
-  return(sum(gsc_obj$open))
+num_stores = function(gsc_batch_obj) {
+  nums = c()
+  for (i in 1:length(gsc_batch_obj)) {
+    nums[i]  = sum(gsc_batch_obj[[i]]$open)
+
+  }
 }
 
 operating_cost_penalty = function(gsc_batch_obj) {
   op = GSC::operating_cost(gsc_batch_obj)
-  return(op$emissions / op$operating)
+
+  return(op / op[1])
 }
 
 emissions_cost_penalty = function(gsc_batch_obj) {
   em = GSC::emissions_cost(gsc_batch_obj)
-  return(em$operating / em$emissions)
-}
+  n = length(gsc_batch_obj)
 
-hybrid_penalty = function(gsc_batch_obj) {
-  return(hybrid_emissions_penalty(gsc_batch_obj) + hybrdi_operating_penalty(gsc_batch_obj))
+  return(em / em[n])
 }
-
-hybrid_emissions_penalty = function(gsc_batch_obj) {
-  em = GSC::emissions_cost(gsc_batch_obj)
-  return(em$hybrid / em$emissions)
-}
-
-hybrid_operating_penalty = function(gsc_batch_obj) {
-  op = GSC::operating_cost(gsc_batch_obj)
-  return(op$hybrid / op$operating)
-}
-
 
 operating_cost = function(gsc_batch_obj) {
-  return(list(
-    "emissions" = type_cost(gsc_batch_obj$operating, gsc_batch_obj$emissions),
-    "hybrid"    = type_cost(gsc_batch_obj$operating, gsc_batch_obj$hybrid),
-    "operating" = type_cost(gsc_batch_obj$operating, gsc_batch_obj$operating)
-  ))
+  return(type_cost(gsc_batch_obj[[1]], gsc_batch_obj))
 }
 
 emissions_cost = function(gsc_batch_obj) {
-  return(list(
-    "emissions" = type_cost(gsc_batch_obj$emissions, gsc_batch_obj$emissions),
-    "hybrid"    = type_cost(gsc_batch_obj$emissions, gsc_batch_obj$hybrid),
-    "operating" = type_cost(gsc_batch_obj$emissions, gsc_batch_obj$operating)
-  ))
+  n = length(gsc_batch_obj)
+  return(type_cost(gsc_batch_obj[[n]], gsc_batch_obj))
 }
 
-type_cost = function(type_obj, gsc_obj) {
-  return (type_cost_customer(type_obj, gsc_obj) + type_cost_facility(type_obj, gsc_obj))
+type_cost = function(type_obj, gsc_batch_obj) {
+  n = length(gsc_batch_obj)
+  type_cost = vector(length=n)
+  for (i in 1:length(gsc_batch_obj)) {
+    type_cost[i] = type_cost_customer(type_obj, gsc_batch_obj[[i]]) + type_cost_facility(type_obj, gsc_batch_obj[[i]])
+  }
+  return(type_cost);
 }
 
 type_cost_customer = function(type_obj, gsc_obj) {
