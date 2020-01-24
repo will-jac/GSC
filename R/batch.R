@@ -44,8 +44,8 @@ run_GSC = function(filename=GSC::filename, c = 200, f = 400, em = 100,
 #' results = batch()
 batch = function(c = 100, f = 300, em_seq = seq(10, 300, 10), ...) {
   n = length(em_seq)
-  result = vector(mode='list', length=n + 2, operating = TRUE, emissions = FALSE)
-  result[[1]] = GSC::run_GSC(c=c, f=f, em=0, ...)
+  result = vector(mode='list', length=n + 2)
+  result[[1]] = GSC::run_GSC(c=c, f=f, em=0, operating = TRUE, emissions = FALSE, ...)
   for (i in 1:n) {
     result[[i+1]] = GSC::run_GSC(c=c, f=f, em = em_seq[i], ...)
   }
