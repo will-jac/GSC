@@ -16,6 +16,16 @@ num_stores = function(gsc_batch_obj) {
   return(nums)
 }
 
+emissions_gap_reduction = function(em_cost) {
+  n = length(em_cost)
+  gap_denom = em_cost[1] - em_cost[n]
+  gap = c()
+  for (i in 1:n) {
+    gap[i] = (em_cost[1] - em_cost[i]) / gap_denom
+  }
+  return(gap)
+}
+
 operating_cost_penalty = function(gsc_batch_obj) {
   op = GSC::operating_cost(gsc_batch_obj)
 
