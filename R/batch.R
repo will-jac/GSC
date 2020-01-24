@@ -49,7 +49,7 @@ batch = function(c = 100, f = 300, em_seq = seq(10, 300, 10), ...) {
   for (i in 1:n) {
     result[[i+1]] = GSC::run_GSC(c=c, f=f, em = em_seq[i], ...)
   }
-  result[[n+2]] = GSC::run_GSC(c=c, f=f, em=0, operating = FALSE, emissions = TRUE, ...)
+  result[[n+2]] = GSC::run_GSC(c=c, f=f, em=1, operating = FALSE, emissions = TRUE, ...)
   return(result)
 }
 
@@ -62,14 +62,14 @@ vehicle_batch = function(car_coef = 1, truck_coef = 1, car_fuel_coef = 1, truck_
 }
 
 
-run_simulations = function() {
+run_simulations = function(...) {
   library(GSC)
   to_return = list()
-  emissions = batch()
-  car = vehicle_batch(car_coef = 1/2)
-  truck = vehicle_batch(truck_coef = 1/2)
-  car_truck = vehicle_batch(truck_coef = 1/2, car_coef = 1/2)
-  fuel = vehicle_batch(car_fuel_coef = 2, truck_fuel_coef = 2)
+  emissions = batch(...)
+  car = vehicle_batch(car_coef = 1/2, ...)
+  truck = vehicle_batch(truck_coef = 1/2, ...)
+  car_truck = vehicle_batch(truck_coef = 1/2, car_coef = 1/2, ...)
+  fuel = vehicle_batch(car_fuel_coef = 2, truck_fuel_coef = 2, ...)
   return(list(
     "emissions" = emissions,
     "car" = car,
