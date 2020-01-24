@@ -102,7 +102,7 @@ package$truck_q_t = 20000
 #' @keywords vehichle truck cost
 #' @return the truck cost for d distance
 truck_cost = function(d) {
-  return(truck_coef*2*d*vehicle_cost(
+  return(package$truck_coef*2*d*vehicle_cost(
     package$OPERATING_COST_INDICATOR* package$truck_v,
     package$truck_f,
     package$OPERATING_COST_INDICATOR * package$truck_p_f,
