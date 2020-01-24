@@ -1,7 +1,7 @@
 
 
 batch_stats = function(results_list) {
-  return (data.frame(
+  return (list(
     stores = GSC::num_stores(results_list),
     em_cost = GSC::emissions_cost(results_list),
     op_cost = GSC::operating_cost(results_list)
@@ -12,8 +12,8 @@ num_stores = function(gsc_batch_obj) {
   nums = c()
   for (i in 1:length(gsc_batch_obj)) {
     nums[i]  = sum(gsc_batch_obj[[i]]$open)
-
   }
+  return(nums)
 }
 
 operating_cost_penalty = function(gsc_batch_obj) {
