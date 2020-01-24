@@ -80,7 +80,7 @@ package$car_q = package$DEMAND
 #' @keywords vehichle car cost
 #' @return the car cost for d distance
 car_cost = function(d) {
-  return(car_coef*2*d*vehicle_cost(
+  return(package$car_coef*2*d*vehicle_cost(
     package$OPERATING_COST_INDICATOR * package$car_v,
     package$car_f,
     package$OPERATING_COST_INDICATOR * package$car_p_f,
