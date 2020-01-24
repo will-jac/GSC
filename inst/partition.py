@@ -215,7 +215,7 @@ def partition(cost_c, cost_f, capacity, customers, sizes, sol_lim=10, time_lim=6
     #print(constraints)
     ############################################################################
     # save and solve
-    cpx.write("model.lp")
+    #cpx.write("model.lp")
 
     cpx.solve()
 
@@ -236,11 +236,11 @@ def partition(cost_c, cost_f, capacity, customers, sizes, sol_lim=10, time_lim=6
     connect = np.reshape(solution[0:I*J],(I,J), order='F')
     open    = solution[I*J:I*J+J]
 
-    write_file("connect_sol.csv", connect)
-    write_file("open_sol.csv", open, two_d = False)
+    #write_file("connect_sol.csv", connect)
+    #write_file("open_sol.csv", open, two_d = False)
 
     print("-------------Solution Found-------------", flush=True)
-    cpx.solution.write("model.sol")
+    #cpx.solution.write("model.sol")
 
     cost = 0
 
