@@ -6,13 +6,13 @@ show_results_dir = function(num) {
   GSC::show_results(read.csv('customer_data.csv'), read.csv('facility_data.csv'), as.matrix(read.csv(conn)), t(as.vector(read.csv(open))))
 }
 
-show_results_obj = function(result_object) {
-  GSC::show_results(result_object$cust.loc, result_object$fac.loc, result_object$connect, result_object$open, 3)
+show_results_obj = function(result_object, ...) {
+  show_results(result_object$cust.loc, result_object$fac.loc, result_object$connect, result_object$open, 3, ...)
 }
 
-show_results = function(customer.df, facility.df, connect, open, numSizes) {
+show_results = function(customer.df, facility.df, connect, open, numSizes, ...) {
 
-  plot(customer.df$x, customer.df$y, asp=1, type = "n")
+  plot(customer.df$x, customer.df$y, asp=1, type = "n", ...)
 
   mod = length(facility.df$x)
 

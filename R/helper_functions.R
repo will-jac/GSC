@@ -5,6 +5,55 @@ package$EMISSIONS_PRICE_TON <- 500
 package$OPERATING_COST_INDICATOR <- 1
 package$DEMAND <- 18
 
+set_vars = function(em, op) {
+  package$EMISSIONS_PRICE_TON = em
+  package$OPERATING_COST_INDICATOR = op
+}
+
+package$car_coef = 1
+package$car_v = 0.0804
+package$car_f = 0.111
+package$car_p_f = 0.98
+package$car_e = 2.325
+package$car_q = package$DEMAND
+
+package$truck_coef = 1
+package$truck_v = 0.484
+package$truck_f = 0.392
+package$truck_p_f = 1.05
+package$truck_e = 2.669
+package$truck_q_t = 20000
+
+package$store_v = 212.8
+package$store_f = 1      #this is already multiplied into e and p_f
+package$store_p_f = 22.9
+package$store_e = 126.1
+package$store_q = 141
+
+reset = function() {
+  package$car_coef = 1
+  package$car_v = 0.0804
+  package$car_f = 0.111
+  package$car_p_f = 0.98
+  package$car_e = 2.325
+  package$car_q = package$DEMAND
+
+  package$truck_coef = 1
+  package$truck_v = 0.484
+  package$truck_f = 0.392
+  package$truck_p_f = 1.05
+  package$truck_e = 2.669
+  package$truck_q_t = 20000
+
+  package$store_v = 212.8
+  package$store_f = 1      #this is already multiplied into e and p_f
+  package$store_p_f = 22.9
+  package$store_e = 126.1
+  package$store_q = 141
+
+}
+
+
 #'Returns the demand (kg of products a customer purchases in a period)
 #' @keywords demand
 #' @return The demand
@@ -67,13 +116,6 @@ vehicle_cost = function(v, f, p_f, e, p_e, q) {
   return((v+(f*(p_f+e*p_e)))/q)
 }
 
-package$car_coef = 1
-package$car_v = 0.0804
-package$car_f = 0.111
-package$car_p_f = 0.98
-package$car_e = 2.325
-package$car_q = package$DEMAND
-
 #'calculates the cost for a car, given a distance Units: $ / (Kg*Km)
 #' @param d the distance the car travels (in Km)
 #' @export
@@ -89,12 +131,7 @@ car_cost = function(d) {
     package$car_q))
 }
 
-package$truck_coef = 1
-package$truck_v = 0.484
-package$truck_f = 0.392
-package$truck_p_f = 1.05
-package$truck_e = 2.669
-package$truck_q_t = 20000
+
 
 #'calculates the cost for a truck, given a distance. Units: $ / (Kg*Km)
 #' @param d the distance the truck travels (in Km)
@@ -127,11 +164,6 @@ space_cost = function(v, f, p_f, e, p_e, q) {
   return(v+(f*(p_f+e*p_e)) / q)
 }
 
-package$store_v = 212.8
-package$store_f = 1      #this is already multiplied into e and p_f
-package$store_p_f = 22.9
-package$store_e = 126.1
-package$store_q = 141
 
 period = 52
 

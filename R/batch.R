@@ -21,7 +21,10 @@ run_GSC = function(filename=GSC::filename, c = 200, f = 400, em = 100,
   reticulate::source_python(paste(system.file(package="GSC"), "partition.py", sep="/"))
 
   c = partition(b$c, as.vector(t(b$f)), as.vector(t(b$s)), as.vector(b$d), 3, sol_lim, time_lim, optim_lim, emphasis)
-  to_ret = list('cust.loc'=a$customer.df, 'fac.loc'=a$facility.df, 'connect' = c$connect, 'open' = c$open, 'cost'=c$cost, 'cust.cost' = b$c, 'fac.cost' = b$f)
+  to_ret = list('cust.loc'=a$customer.df, 'fac.loc'=a$facility.df,
+                'connect' = c$connect, 'open' = c$open,
+                'cost'=c$cost, 'em.cost' = package$EMISSIONS_PRICE_TON,
+                'cust.cost' = b$c, 'fac.cost' = b$f)
 
   return (to_ret)
 }
