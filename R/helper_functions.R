@@ -160,8 +160,8 @@ truck_capacity = function() {
 #' @param p_e price of emissions
 #' @keywords store cost
 #' @return the space cost
-space_cost = function(v, f, p_f, e, p_e, q) {
-  return(v+(f*(p_f+e*p_e)) / q)
+space_cost = function(v, f, p_f, e, p_e, q=1) {
+  return((v+(f*(p_f+e*p_e))) / q)
 }
 
 
@@ -183,13 +183,12 @@ store_cost = function(t) {
 #' @export
 #' @return the space cost per sq meters
 store_cost_meter = function(sq_meter) {
-  return(period * sq_meter * space_cost(
+  return((sq_meter * space_cost(
     package$OPERATING_COST_INDICATOR * package$store_v,
     package$store_f,
     package$OPERATING_COST_INDICATOR * package$store_p_f,
     package$store_e,
-    p_e=package$EMISSIONS_PRICE_TON / 1000,
-    package$store_q))
+    p_e=package$EMISSIONS_PRICE_TON / 1000)) / period)
 }
 
 #'calculates the cost per kg / period

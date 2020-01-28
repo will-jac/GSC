@@ -12,6 +12,15 @@ ggplot() +
   geom_line(aes(x,gsc_stats_obj$fuel     $em_gap, color="fuel"))
 }
 
+
+show_stats = function() {
+  print(c("base", base.df$em_cost[1], base.df$em_cost[32]))
+  print(c("car",  car.df$em_cost[1],  car.df$em_cost[32]))
+  print(c("truck",car.df$em_cost[1],  truck.df$em_cost[32]))
+  print(c("car_truck",  car_truck.df$em_cost[1],  car_truck.df$em_cost[32]))
+  print(c("fuel",  fuel.df$em_cost[1],  fuel.df$em_cost[32]))
+}
+
 batch_stats = function(results_obj) {
   stats_list = c()
   for (i in 1:length(results_obj)) {
