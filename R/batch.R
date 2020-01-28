@@ -64,22 +64,40 @@ vehicle_batch = function(car_coef = 1, truck_coef = 1, car_fuel_coef = 1, truck_
   return(batch(...))
 }
 
+store_batch = function(store_e = 126.1, store_p_f = 22.9, rent = 212.8, ...) {
+  package$store_e = store_e
+  package$store_p_f = store_p_f
+  package$store_v = rent
+  return(batch(...))
+}
 
 run_simulations = function(...) {
   library(GSC)
   to_return = list()
-  emissions = batch(...)
+  base = batch(...)
   car = vehicle_batch(car_coef = 1/2, ...)
   truck = vehicle_batch(truck_coef = 1/2, ...)
   car_truck = vehicle_batch(truck_coef = 1/2, car_coef = 1/2, ...)
   fuel = vehicle_batch(car_fuel_coef = 2, truck_fuel_coef = 2, ...)
+  low_elec = store_batch(store_e = 60, ...)
+  high_elec = store_batch(store_e = 183.9, ...)
+  high_rent = store_batch(rent = 425.7, ...)
+  low_e_high_r = store_batch(rent=425.7, store_e=60, ...)
+  store_fuel = store_batch(store_e = 304, store_p_f = 55.4, ...)
+  store_fuel_rent = store_batch(rent=425.7, store_e = 304, store_p_f = 55.4, ...)
   return(list(
-    "emissions" = emissions,
+    "base" = emissions,
     "car" = car,
     "truck" = truck,
     "car_truck" = car_truck,
-    "fuel" = fuel
-  ))
+    "gas_price" = fuel,
+    "low_elec" = low_elec,
+    "high_elec" = high_elec,
+    "high_rent" = high_rent,
+    "low_e_high_r" = low_e_high_r,
+    "store_high_fuel" = store_fuel,
+    "store_high_fuel_rent" = store_fuel_rent
+    ))
 }
 
 
