@@ -86,7 +86,7 @@ run_simulations = function(...) {
   store_fuel = store_batch(store_e = 304, store_p_f = 55.4, ...)
   store_fuel_rent = store_batch(rent=425.7, store_e = 304, store_p_f = 55.4, ...)
   return(list(
-    "base" = emissions,
+    "base" = base,
     "car" = car,
     "truck" = truck,
     "car_truck" = car_truck,
