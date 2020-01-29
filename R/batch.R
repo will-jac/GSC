@@ -79,7 +79,7 @@ store_batch = function(store_e = 126.1, store_p_f = 22.9, rent = 212.8, ...) {
 run_simulations = function(filename=GSC::filename, c=100, f=150, ...) {
   library(GSC)
 
-  data = load_data(filename=filename, c=c, f=f)
+  data_cache = load_data(filename=filename, c=c, f=f)
 
   to_return = list()
   base = batch(..., data_cache=data_cache)
