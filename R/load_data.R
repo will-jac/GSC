@@ -17,15 +17,15 @@ load_data = function(filename, c=100, f=200, dropZeros=TRUE, ...) {
   y = dimms[2]
 
 
-  x.c = x / reduceByClient
-  y.c = y / reduceByClient
-  x.f = x / reduceByFacility
-  y.f = y / reduceByFacility
+  x.c = x / c
+  y.c = y / c
+  x.f = x / f
+  y.f = y / f
 
 
   # subset it into something more granular
-  rc = raster::aggregate(data.raster, fun="sum", fact=reduceByClient)
-  rf = raster::aggregate(data.raster, fun="sum", fact=reduceByFacility)
+  rc = raster::aggregate(data.raster, fun="sum", fact=c)
+  rf = raster::aggregate(data.raster, fun="sum", fact=f)
   #print("dimensions")
   #print(dim(rc))
   #print(dim(rf))
