@@ -2,7 +2,7 @@ run_GSC = function(filename=GSC::filename, c = 200, f = 400, em = 100,
                  time_lim=60*60, optim_lim=0.01, emphasis=3, sol_lim=10,
                  emissions = TRUE, operating = TRUE, data_cache=NULL) {
   if (is.null(data_cache)) {
-    a = load_data(filename=filename, reduceByClient=c, reduceByFacility=f)
+    a = load_data(filename=filename, c=c, f=f)
   }
   else {
     a = data_cache
@@ -93,6 +93,7 @@ run_simulations = function(filename=GSC::filename, c=100, f=150, ...) {
   low_e_high_r = store_batch(rent=425.7, store_e=60, ..., data_cache=data_cache)
   store_fuel = store_batch(store_e = 304, store_p_f = 55.4, ..., data_cache=data_cache)
   store_fuel_rent = store_batch(rent=425.7, store_e = 304, store_p_f = 55.4, ..., data_cache=data_cache)
+
   return(list(
     "base" = base,
     "car" = car,
