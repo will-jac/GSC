@@ -1,6 +1,6 @@
 filename = "C:/Users/Jack/College/Fall2019/Green-Supply-Chain/code/data/geotiff/hrsl_pri_pop.tif"
 
-load_data = function(filename, c=100, f=200 dropZeros=TRUE, ...) {
+load_data = function(filename, c=100, f=200, dropZeros=TRUE, ...) {
   print("loading data")
   # look in the current directory
   data.raster <- raster::raster(filename)
