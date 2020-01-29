@@ -1,6 +1,6 @@
 run_GSC = function(filename=GSC::filename, c = 200, f = 400, em = 100,
                  time_lim=60*60, optim_lim=0.01, emphasis=3, sol_lim=10,
-                 emissions = TRUE, operating = TRUE, data_cache=NULL) {
+                 emissions = TRUE, operating = TRUE, data_cache = NULL) {
   if (is.null(data_cache)) {
     a = load_data(filename=filename, c=c, f=f)
   }
@@ -50,49 +50,49 @@ run_GSC = function(filename=GSC::filename, c = 200, f = 400, em = 100,
 #' @export
 #'
 #' results = batch()
-batch = function(c = 100, f = 200, em_seq = seq(10, 300, 10), ...) {
+batch = function(data_cache=NULL, c = 100, f = 200, em_seq = seq(10, 300, 10), ...) {
   n = length(em_seq)
   result = vector(mode='list', length=n + 2)
-  result[[1]] = GSC::run_GSC(c=c, f=f, em=0, operating = TRUE, emissions = FALSE, ...)
+  result[[1]] = GSC::run_GSC(c=c, f=f, em=0, operating = TRUE, emissions = FALSE, data_cache=data_cache, ...)
   for (i in 1:n) {
-    result[[i+1]] = GSC::run_GSC(c=c, f=f, em = em_seq[i], ...)
+    result[[i+1]] = GSC::run_GSC(c=c, f=f, em = em_seq[i], data_cache=data_cache, ...)
   }
-  result[[n+2]] = GSC::run_GSC(c=c, f=f, em=1, operating = FALSE, emissions = TRUE, ...)
+  result[[n+2]] = GSC::run_GSC(c=c, f=f, em=1, operating = FALSE, emissions = TRUE, data_cache=data_cache, ...)
   return(result)
 }
 
-vehicle_batch = function(car_coef = 1, truck_coef = 1, car_fuel_coef = 1, truck_fuel_coef = 1, ...) {
+vehicle_batch = function(car_coef = 1, truck_coef = 1, car_fuel_coef = 1, truck_fuel_coef = 1, data_cache=NULL, ...) {
   package$car_coef = car_coef
   package$truck_coef= truck_coef
   package$car_p_f = car_fuel_coef * package$car_p_f
   package$truck_p_f = truck_fuel_coef * package$truck_p_f
-  return(batch(...))
+  return(batch(data_cache=data_cache, ...))
 }
 
-store_batch = function(store_e = 126.1, store_p_f = 22.9, rent = 212.8, ...) {
+store_batch = function(store_e = 126.1, store_p_f = 22.9, rent = 212.8, data_cache=NULL, ...) {
   package$store_e = store_e
   package$store_p_f = store_p_f
   package$store_v = rent
-  return(batch(...))
+  return(batch(data_cache=data_cache, ...))
 }
 
-run_simulations = function(filename=GSC::filename, c=100, f=150, ...) {
+run_simulations = function(filename=GSC::filename, c=100, f=125, ...) {
   library(GSC)
 
   data_cache = load_data(filename=filename, c=c, f=f)
 
   to_return = list()
-  base = batch(..., data_cache=data_cache)
-  car = vehicle_batch(car_coef = 1/2, ..., data_cache=data_cache)
-  truck = vehicle_batch(truck_coef = 1/2, ..., data_cach=data_cache)
-  car_truck = vehicle_batch(truck_coef = 1/2, car_coef = 1/2, ..., data_cache=data_cache)
-  fuel = vehicle_batch(car_fuel_coef = 2, truck_fuel_coef = 2, ..., data_cache=data_cache)
-  low_elec = store_batch(store_e = 60, ..., data_cache=data_cache)
-  high_elec = store_batch(store_e = 183.9, ..., data_cache=data_cache)
-  high_rent = store_batch(rent = 425.7, ..., data_cache=data_cache)
-  low_e_high_r = store_batch(rent=425.7, store_e=60, ..., data_cache=data_cache)
-  store_fuel = store_batch(store_e = 304, store_p_f = 55.4, ..., data_cache=data_cache)
-  store_fuel_rent = store_batch(rent=425.7, store_e = 304, store_p_f = 55.4, ..., data_cache=data_cache)
+  base = batch(data_cache=data_cache, ...)
+  car = vehicle_batch(car_coef = 1/2, data_cache=data_cache, ...)
+  truck = vehicle_batch(truck_coef = 1/2, data_cach=data_cache, ...)
+  car_truck = vehicle_batch(truck_coef = 1/2, car_coef = 1/2, data_cache=data_cache, ...)
+  fuel = vehicle_batch(car_fuel_coef = 2, truck_fuel_coef = 2, data_cache=data_cache, ...)
+  low_elec = store_batch(store_e = 60, data_cache=data_cache, ...)
+  high_elec = store_batch(store_e = 183.9, data_cache=data_cache, ...)
+  high_rent = store_batch(rent = 425.7, data_cache=data_cache, ...)
+  low_e_high_r = store_batch(rent=425.7, store_e=60, data_cache=data_cache, ...)
+  store_fuel = store_batch(store_e = 304, store_p_f = 55.4, data_cache=data_cache, ...)
+  store_fuel_rent = store_batch(rent=425.7, store_e = 304, store_p_f = 55.4, data_cache=data_cache, ...)
 
   return(list(
     "base" = base,
