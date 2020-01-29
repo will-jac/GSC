@@ -13,12 +13,15 @@ ggplot() +
 }
 
 
-show_stats = function() {
-  print(c("base", base.df$em_cost[1], base.df$em_cost[32]))
-  print(c("car",  car.df$em_cost[1],  car.df$em_cost[32]))
-  print(c("truck",car.df$em_cost[1],  truck.df$em_cost[32]))
-  print(c("car_truck",  car_truck.df$em_cost[1],  car_truck.df$em_cost[32]))
-  print(c("fuel",  fuel.df$em_cost[1],  fuel.df$em_cost[32]))
+show_stats = function(stats_obj) {
+  n = length(stats_obj[[1]]$em_cost)
+  for (i in 1:length(stats_obj)) {
+    print(c(
+      names(stats_obj[i]),
+      round(stats_obj[[i]]$em_cost[1], 1),
+      round(stats_obj[[i]]$em_cost[n], 1)
+    ))
+  }
 }
 
 batch_stats = function(results_obj) {
@@ -104,7 +107,7 @@ type_cost_customer = function(type_obj, gsc_obj) {
   for (i in 1:nrow(connect)) {
     for (j in 1:ncol(connect)) {
       if (connect[i,j]) {
-        cost = cost + bit64::as.integer64(cust.cost[i,j])
+        cost = cost + as.double(cust.cost[i,j])
         break
       }
     }
@@ -120,7 +123,7 @@ type_cost_facility = function(type_obj, gsc_obj) {
 
   for (i in 1:length(open)) {
     if (open[i]) {
-      cost = cost + bit64::as.integer64(fac.cost[i])
+      cost = cost + as.double(fac.cost[i])
     }
   }
 

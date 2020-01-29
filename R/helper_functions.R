@@ -82,7 +82,7 @@ get_store_capacities = function() {
   # supercenter  = 100,000
   # regular      = 30,000
   # neighborhood = 5,000
-  return(c(5000, 50000, 300000))
+  return(c(10000, 50000, 100000))
 
   #return(c(5000, 50000, 500000))
 }
