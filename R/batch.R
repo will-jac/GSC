@@ -73,7 +73,7 @@ store_batch = function(store_e = 126.1, store_p_f = 22.9, rent = 212.8, ...) {
   package$store_e = store_e
   package$store_p_f = store_p_f
   package$store_v = rent
-  return(batch(data_cache=data_cache, ...))
+  return(batch(...))
 }
 
 run_simulations = function(filename=GSC::filename, c=100, f=125, ...) {
