@@ -82,17 +82,17 @@ run_simulations = function(filename=GSC::filename, c=100, f=125, ...) {
   data_cache = load_data(filename=filename, c=c, f=f)
 
   to_return = list()
-  base = batch(c=c, f=f, ...)
-  car = vehicle_batch(car_coef = 1/2, c=c, f=f ,...)
-  truck = vehicle_batch(truck_coef = 1/2, data_cach=data_cache, ...)
-  car_truck = vehicle_batch(truck_coef = 1/2, car_coef = 1/2, c=c, f=f, ...)
-  fuel = vehicle_batch(car_fuel_coef = 2, truck_fuel_coef = 2, c=c, f=f, ...)
-  low_elec = store_batch(store_e = 60, c=c, f=f, ...)
-  high_elec = store_batch(store_e = 183.9, c=c, f=f, ...)
-  high_rent = store_batch(rent = 425.7, c=c, f=f, ...)
-  low_e_high_r = store_batch(rent=425.7, store_e=60, c=c, f=f, ...)
-  store_fuel = store_batch(store_e = 304, store_p_f = 55.4, c=c, f=f, ...)
-  store_fuel_rent = store_batch(rent=425.7, store_e = 304, store_p_f = 55.4, c=c, f=f, ...)
+  base = batch(c=c, f=f, data_cache=data_cache, ...)
+  car = vehicle_batch(car_coef = 1/2, c=c, f=f, data_cache=data_cache, ...)
+  truck = vehicle_batch(truck_coef = 1/2, data_cache=data_cache, ...)
+  car_truck = vehicle_batch(truck_coef = 1/2, car_coef = 1/2, c=c, f=f, data_cache=data_cache,...)
+  fuel = vehicle_batch(car_fuel_coef = 2, truck_fuel_coef = 2, c=c, f=f, data_cache=data_cache,...)
+  low_elec = store_batch(store_e = 60, c=c, f=f, data_cache=data_cache,...)
+  high_elec = store_batch(store_e = 183.9, c=c, f=f, data_cache=data_cache,...)
+  high_rent = store_batch(rent = 425.7, c=c, f=f, data_cache=data_cache,...)
+  low_e_high_r = store_batch(rent=425.7, store_e=60, c=c, f=f, data_cache=data_cache,...)
+  store_fuel = store_batch(store_e = 304, store_p_f = 55.4, c=c, f=f, data_cache=data_cache,...)
+  store_fuel_rent = store_batch(rent=425.7, store_e = 304, store_p_f = 55.4, c=c, f=f, data_cache=data_cache,...)
 
   return(list(
     "base" = base,
