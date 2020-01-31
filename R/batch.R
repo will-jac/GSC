@@ -101,22 +101,22 @@ run_simulations = function(i, filename=GSC::filename, c=100, f=125, ...) {
   GSC::reset()
 
   low_elec = store_batch(store_e = 60, c=c, f=f, data_cache=data_cache,...)
-  saveRDS(low_elec, paste("r", i, "low_elec", sep="_"))
+  saveRDS(low_elec, paste("r", i, "low_elec.rds", sep="_"))
 
   high_elec = store_batch(store_e = 183.9, c=c, f=f, data_cache=data_cache,...)
-  saveRDS(high_elec, paste("r", i, "high_elec", sep="_"))
+  saveRDS(high_elec, paste("r", i, "high_elec.rds", sep="_"))
 
   high_rent = store_batch(rent = 425.7, c=c, f=f, data_cache=data_cache,...)
-  saveRDS(high_rent, paste("r", i, "high_rent", sep="_"))
+  saveRDS(high_rent, paste("r", i, "high_rent.rds", sep="_"))
 
   low_e_high_r = store_batch(rent=425.7, store_e=60, c=c, f=f, data_cache=data_cache,...)
-  saveRDS(low_e_high_r, paste("r", i, "low_e_high_r", sep="_"))
+  saveRDS(low_e_high_r, paste("r", i, "low_e_high_r.rds", sep="_"))
 
   store_fuel = store_batch(store_e = 304, store_p_f = 55.4, c=c, f=f, data_cache=data_cache,...)
-  saveRDS(store_fuel, paste("r", i, "store_fuel", sep="_"))
+  saveRDS(store_fuel, paste("r", i, "store_fuel.rds", sep="_"))
 
   store_fuel_rent = store_batch(rent=425.7, store_e = 304, store_p_f = 55.4, c=c, f=f, data_cache=data_cache,...)
-  saveRDS(store_fuel_rent, paste("r", i, "store_fuel_rent", sep="_"))
+  saveRDS(store_fuel_rent, paste("r", i, "store_fuel_rent.rds", sep="_"))
 
   return(list(
     "base" = base,
