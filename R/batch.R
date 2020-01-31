@@ -87,6 +87,7 @@ run_simulations = function(filename=GSC::filename, c=100, f=125, ...) {
   truck = vehicle_batch(truck_coef = 1/2, data_cache=data_cache, ...)
   car_truck = vehicle_batch(truck_coef = 1/2, car_coef = 1/2, c=c, f=f, data_cache=data_cache,...)
   fuel = vehicle_batch(car_fuel_coef = 2, truck_fuel_coef = 2, c=c, f=f, data_cache=data_cache,...)
+  GSC::reset()
   low_elec = store_batch(store_e = 60, c=c, f=f, data_cache=data_cache,...)
   high_elec = store_batch(store_e = 183.9, c=c, f=f, data_cache=data_cache,...)
   high_rent = store_batch(rent = 425.7, c=c, f=f, data_cache=data_cache,...)
