@@ -76,24 +76,47 @@ store_batch = function(store_e = 126.1, store_p_f = 22.9, rent = 212.8, ...) {
   return(batch(...))
 }
 
-run_simulations = function(filename=GSC::filename, c=100, f=125, ...) {
+run_simulations = function(i, filename=GSC::filename, c=100, f=125, ...) {
   library(GSC)
 
   data_cache = load_data(filename=filename, c=c, f=f)
-
-  to_return = list()
-  base = batch(c=c, f=f, data_cache=data_cache, ...)
-  car = vehicle_batch(car_coef = 1/2, c=c, f=f, data_cache=data_cache, ...)
-  truck = vehicle_batch(truck_coef = 1/2, data_cache=data_cache, ...)
-  car_truck = vehicle_batch(truck_coef = 1/2, car_coef = 1/2, c=c, f=f, data_cache=data_cache,...)
-  fuel = vehicle_batch(car_fuel_coef = 2, truck_fuel_coef = 2, c=c, f=f, data_cache=data_cache,...)
   GSC::reset()
+  to_return = list()
+
+  base = batch(c=c, f=f, data_cache=data_cache, ...)
+  saveRDS(batch, paste("r", i, "base.rds", sep="_"))
+
+  car = vehicle_batch(car_coef = 1/2, c=c, f=f, data_cache=data_cache, ...)
+  saveRDS(car, paste("r", i, "car.rds", sep="_"))
+
+  truck = vehicle_batch(truck_coef = 1/2, data_cache=data_cache, ...)
+  saveRDS(truck, paste("r", i, "truck.rds", sep="_"))
+
+  car_truck = vehicle_batch(truck_coef = 1/2, car_coef = 1/2, c=c, f=f, data_cache=data_cache,...)
+  saveRDS(car_truck, paste("r", i, "car_truck.rds", sep="_"))
+
+  fuel = vehicle_batch(car_fuel_coef = 2, truck_fuel_coef = 2, c=c, f=f, data_cache=data_cache,...)
+  saveRDS(batch, paste("r", i, "fuel.rds", sep="_"))
+
+  GSC::reset()
+
   low_elec = store_batch(store_e = 60, c=c, f=f, data_cache=data_cache,...)
+  saveRDS(low_elec, paste("r", i, "low_elec", sep="_"))
+
   high_elec = store_batch(store_e = 183.9, c=c, f=f, data_cache=data_cache,...)
+  saveRDS(high_elec, paste("r", i, "high_elec", sep="_"))
+
   high_rent = store_batch(rent = 425.7, c=c, f=f, data_cache=data_cache,...)
+  saveRDS(high_rent, paste("r", i, "high_rent", sep="_"))
+
   low_e_high_r = store_batch(rent=425.7, store_e=60, c=c, f=f, data_cache=data_cache,...)
+  saveRDS(low_e_high_r, paste("r", i, "low_e_high_r", sep="_"))
+
   store_fuel = store_batch(store_e = 304, store_p_f = 55.4, c=c, f=f, data_cache=data_cache,...)
+  saveRDS(store_fuel, paste("r", i, "store_fuel", sep="_"))
+
   store_fuel_rent = store_batch(rent=425.7, store_e = 304, store_p_f = 55.4, c=c, f=f, data_cache=data_cache,...)
+  saveRDS(store_fuel_rent, paste("r", i, "store_fuel_rent", sep="_"))
 
   return(list(
     "base" = base,
