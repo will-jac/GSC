@@ -1,5 +1,5 @@
 run_GSC = function(filename=GSC::filename, c = 100, f = 200, em = 100,
-                 time_lim=60*60, optim_lim=0.01, emphasis=3, sol_lim=10,
+                 time_lim=60*60, optim_lim=0.01, emphasis=3, sol_lim=15,
                  emissions = TRUE, operating = TRUE, data_cache = NULL) {
   if (is.null(data_cache)) {
     a = load_data(filename=filename, c=c, f=f)
@@ -76,7 +76,7 @@ store_batch = function(store_e = 126.1, store_p_f = 22.9, rent = 212.8, ...) {
   return(batch(...))
 }
 
-run_simulations = function(i, filename=GSC::filename, c=100, f=125, ...) {
+run_simulations = function(i=1, filename=GSC::filename, c=100, f=125, ...) {
   library(GSC)
 
   data_cache = load_data(filename=filename, c=c, f=f)
@@ -84,7 +84,7 @@ run_simulations = function(i, filename=GSC::filename, c=100, f=125, ...) {
   to_return = list()
 
   base = batch(c=c, f=f, data_cache=data_cache, ...)
-  saveRDS(batch, paste("r", i, "base.rds", sep="_"))
+  saveRDS(base, paste("r", i, "base.rds", sep="_"))
 
   car = vehicle_batch(car_coef = 1/2, c=c, f=f, data_cache=data_cache, ...)
   saveRDS(car, paste("r", i, "car.rds", sep="_"))
@@ -96,7 +96,7 @@ run_simulations = function(i, filename=GSC::filename, c=100, f=125, ...) {
   saveRDS(car_truck, paste("r", i, "car_truck.rds", sep="_"))
 
   fuel = vehicle_batch(car_fuel_coef = 2, truck_fuel_coef = 2, c=c, f=f, data_cache=data_cache,...)
-  saveRDS(batch, paste("r", i, "fuel.rds", sep="_"))
+  saveRDS(fuel, paste("r", i, "fuel.rds", sep="_"))
 
   GSC::reset()
 

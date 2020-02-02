@@ -13,13 +13,13 @@ ggplot() +
 }
 
 
-show_stats = function(stats_obj) {
+show_stats = function(stats_obj, d=1) {
   n = length(stats_obj[[1]]$em_cost)
   for (i in 1:length(stats_obj)) {
     print(c(
       names(stats_obj[i]),
-      round(stats_obj[[i]]$op_cost[1], 1),
-      round(stats_obj[[i]]$op_cost[n], 1)
+      round(as.double(stats_obj[[i]]$em_cost[1] / d), 1),
+      round(as.double(stats_obj[[i]]$em_cost[n] / d), 1)
     ))
   }
 }
