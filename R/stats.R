@@ -13,7 +13,7 @@ ggplot() +
 }
 
 
-show_stats = function(stats_obj, d=1) {
+show_em = function(stats_obj, d=1) {
   n = length(stats_obj[[1]]$em_cost)
   for (i in 1:length(stats_obj)) {
     print(c(
@@ -23,6 +23,18 @@ show_stats = function(stats_obj, d=1) {
     ))
   }
 }
+
+show_op = function(stats_obj, d=1) {
+  n = length(stats_obj[[1]]$em_cost)
+  for (i in 1:length(stats_obj)) {
+    print(c(
+      names(stats_obj[i]),
+      round(as.double(stats_obj[[i]]$op_cost[1] / d), 1),
+      round(as.double(stats_obj[[i]]$op_cost[n] / d), 1)
+    ))
+  }
+}
+
 
 batch_stats = function(results_obj) {
   stats_list = c()
@@ -106,7 +118,7 @@ type_cost_customer = function(type_obj, gsc_obj) {
 
   for (i in 1:nrow(connect)) {
     for (j in 1:ncol(connect)) {
-      if (connect[i,j]) {
+      if (connect[i,j] > 0.9) {
         cost = cost + as.double(cust.cost[i,j])
         break
       }
@@ -122,7 +134,7 @@ type_cost_facility = function(type_obj, gsc_obj) {
   cost = 0
 
   for (i in 1:length(open)) {
-    if (open[i]) {
+    if (open[i] > 0.9) {
       cost = cost + as.double(fac.cost[i])
     }
   }

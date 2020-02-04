@@ -1,6 +1,6 @@
 filename = "C:/Users/Jack/College/Fall2019/Green-Supply-Chain/code/data/geotiff/hrsl_pri_pop.tif"
 
-load_data = function(filename, c=100, f=200, dropZeros=TRUE, ...) {
+load_data = function(filename, c=100, f=200, dropZeros=TRUE, extent=NULL,...) {
   print("loading data")
   # look in the current directory
   data.raster <- raster::raster(filename)
@@ -9,6 +9,11 @@ load_data = function(filename, c=100, f=200, dropZeros=TRUE, ...) {
 
   # project it into km!
   data.raster <-raster::projectRaster(data.raster, crs=crs)
+
+  # should we crop?
+  if (! isNull(extent)) {
+    data.raster <- raster::crop(data.raster, extent)
+  }
 
   # we expect 30 m by 30 m resolution
 

@@ -79,7 +79,7 @@ store_batch = function(store_e = 126.1, store_p_f = 22.9, rent = 212.8, ...) {
 run_simulations = function(i=1, filename=GSC::filename, c=100, f=125, ...) {
   library(GSC)
 
-  data_cache = load_data(filename=filename, c=c, f=f)
+  data_cache = load_data(filename=filename, c=c, f=f, extent = raster::extent(c(150000,200000,2000000,2050000)))
   GSC::reset()
   to_return = list()
 
