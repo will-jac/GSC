@@ -5,7 +5,7 @@ load_data = function(filename, c=100, f=200, dropZeros=TRUE, extent=NULL,...) {
   # look in the current directory
   data.raster <- raster::raster(filename)
   data.raster = raster::readAll(data.raster)
-  crs = "+proj=utm +zone=20 +ellps=clrk66 +towgs84=11,72,-101,0,0,0,0 +units=m +no_defs"
+  crs = "+proj=utm +zone=20 +ellps=clrk66 +towgs84=11,72,-101,0,0,0,0 +units=km +no_defs"
 
   # project it into km!
   data.raster <-raster::projectRaster(data.raster, crs=crs)
