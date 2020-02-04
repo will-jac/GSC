@@ -11,7 +11,7 @@ load_data = function(filename, c=100, f=200, dropZeros=TRUE, extent=NULL,...) {
   data.raster <-raster::projectRaster(data.raster, crs=crs)
 
   # should we crop?
-  if (! isNull(extent)) {
+  if (! is.null(extent)) {
     data.raster <- raster::crop(data.raster, extent)
   }
 
