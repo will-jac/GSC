@@ -122,9 +122,9 @@ vehicle_cost = function(v, f, p_f, e, p_e, q) {
 #' @keywords vehichle car cost
 #' @return the car cost for d distance
 car_cost = function(d) {
-  return(package$car_coef*2*d*vehicle_cost(
+  return(2*d*vehicle_cost(
     package$OPERATING_COST_INDICATOR * package$car_v,
-    package$car_f,
+    package$car_coef*package$car_f,
     package$OPERATING_COST_INDICATOR * package$car_p_f,
     package$car_e,
     p_e=package$EMISSIONS_PRICE_TON / 1000,
@@ -139,9 +139,9 @@ car_cost = function(d) {
 #' @keywords vehichle truck cost
 #' @return the truck cost for d distance
 truck_cost = function(d) {
-  return(package$truck_coef*2*d*vehicle_cost(
+  return(2*d*vehicle_cost(
     package$OPERATING_COST_INDICATOR* package$truck_v,
-    package$truck_f,
+    package$truck_coef*package$truck_f,
     package$OPERATING_COST_INDICATOR * package$truck_p_f,
     package$truck_e,
     p_e=package$EMISSIONS_PRICE_TON / 1000,

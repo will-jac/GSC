@@ -13,36 +13,18 @@ ggplot() +
 }
 
 
-show_em = function(stats_obj, d=1) {
-  n = length(stats_obj[[1]]$em_cost)
-  for (i in 1:length(stats_obj)) {
-    print(c(
-      names(stats_obj[i]),
-      round(as.double(stats_obj[[i]]$em_cost[1] / d), 1),
-      round(as.double(stats_obj[[i]]$em_cost[n] / d), 1)
-    ))
-  }
-}
-
-show_op = function(stats_obj, d=1) {
-  n = length(stats_obj[[1]]$em_cost)
-  for (i in 1:length(stats_obj)) {
-    print(c(
-      names(stats_obj[i]),
-      round(as.double(stats_obj[[i]]$op_cost[1] / d), 1),
-      round(as.double(stats_obj[[i]]$op_cost[n] / d), 1)
-    ))
-  }
-}
-
-
 batch_stats = function(results_obj) {
   stats_list = c()
+
   for (i in 1:length(results_obj)) {
-    s = GSC::stats(results_obj[[i]])
+    #s = GSC::stats(results_obj[[i]])
+    stats_list = append(stats_list, s)
     stats_list[[i]] = s
     names(stats_list[i]) = names(results_obj[i])
   }
+  #stats = matrix(stats_list, nrow=length(results_obj), ncol=length(s), byrow=TRUE)
+  #rownames(stats) = names(results_obj)
+  #colnames(stats) = names(s)
   names(stats_list) = names(results_obj)
   return(stats_list)
 }
@@ -50,15 +32,22 @@ batch_stats = function(results_obj) {
 stats = function(results_list) {
   e = GSC::emissions_cost(results_list)
   o = GSC::operating_cost(results_list)
-  return (data.frame(list(
-    stores  = GSC::num_stores(results_list),
-    em_cost = e,
-    em_gap  = GSC::emissions_gap_reduction(e),
-    em_p    = GSC::emissions_cost_penalty(e),
-    op_cost = o,
-    op_gap  = GSC::operating_gap_reduction(o),
-    op_p    = GSC::operating_cost_penalty(o)
-  )))
+  return (c(
+    stores  =
+      GSC::num_stores(results_list),
+    em_cost =
+      e,
+    em_gap  =
+      GSC::emissions_gap_reduction(e),
+    em_p    =
+      GSC::emissions_cost_penalty(e),
+    op_cost =
+      o,
+    op_gap  =
+      GSC::operating_gap_reduction(o),
+    op_p    =
+      GSC::operating_cost_penalty(o)
+  ))
 }
 
 operating_gap_reduction = function(op_cost) {

@@ -62,6 +62,7 @@ batch = function(em_seq = seq(10, 300, 10), ...) {
 }
 
 vehicle_batch = function(car_coef = 1, truck_coef = 1, car_fuel_coef = 1, truck_fuel_coef = 1, ...) {
+  GSC::reset()
   package$car_coef = car_coef
   package$truck_coef= truck_coef
   package$car_p_f = car_fuel_coef * package$car_p_f
@@ -70,6 +71,7 @@ vehicle_batch = function(car_coef = 1, truck_coef = 1, car_fuel_coef = 1, truck_
 }
 
 store_batch = function(store_e = 126.1, store_p_f = 22.9, rent = 212.8, ...) {
+  GSC::reset()
   package$store_e = store_e
   package$store_p_f = store_p_f
   package$store_v = rent
