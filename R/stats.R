@@ -17,8 +17,8 @@ batch_stats = function(results_obj) {
   stats_list = c()
 
   for (i in 1:length(results_obj)) {
-    #s = GSC::stats(results_obj[[i]])
-    stats_list = append(stats_list, s)
+    s = stats(results_obj[[i]])
+    #stats_list = append(stats_list, s)
     stats_list[[i]] = s
     names(stats_list[i]) = names(results_obj[i])
   }
@@ -32,9 +32,11 @@ batch_stats = function(results_obj) {
 stats = function(results_list) {
   e = GSC::emissions_cost(results_list)
   o = GSC::operating_cost(results_list)
-  return (c(
+  return (data.frame(
     stores  =
       GSC::num_stores(results_list),
+    store_cap =
+      store_cap_list(results_list),
     em_cost =
       e,
     em_gap  =
@@ -49,6 +51,37 @@ stats = function(results_list) {
       GSC::operating_cost_penalty(o)
   ))
 }
+
+store_cap_list = function(results_list) {
+  ret = c()
+  for (i in 1:length(results_list)) {
+    ret = append(ret, store_cap(results_list[[i]]))
+  }
+  return(ret)
+}
+
+
+store_cap = function(results_obj, n=3) {
+  open = results_obj$open
+  connect = results_obj$connect
+
+  cost = 0
+  mod = length(open / n)
+  cap = GSC::get_store_capacities()
+
+  num.con = 0
+  num.cap = 0
+
+  for (j in 1:length(open)) {
+    if (open[j] > 0.9) {
+      k = ceiling(j / mod)
+      num.cap = num.cap + cap[k]
+      num.con = num.con + sum(connect[,j])
+    }
+  }
+  return(100 * (num.con / num.cap))
+}
+
 
 operating_gap_reduction = function(op_cost) {
   n = length(op_cost)

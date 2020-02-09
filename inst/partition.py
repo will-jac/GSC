@@ -96,7 +96,7 @@ def read_and_partition():
     parition(cost_c, cost_f, capacity, num_customers, sizes)
 
 
-def partition(cost_c, cost_f, capacity, customers, sizes, sol_lim=10, time_lim=60*60, optim_lim=0.1, emphasis=0):
+def partition(cost_c, cost_f, capacity, customers, sizes, sol_lim=10, time_lim=3*60*60, optim_lim=0.1, emphasis=0):
     print('Partitioning the network...', flush=True)
 
     num_f = len(cost_f)
@@ -129,11 +129,11 @@ def partition(cost_c, cost_f, capacity, customers, sizes, sol_lim=10, time_lim=6
     cpx.parameters.emphasis.mip.set(emphasis)
 
     # register our timer
-    # timelim_cb = cpx.register_callback(TimeLimitCallback)
-    # timelim_cb.starttime = cpx.get_time()
-    # timelim_cb.timelimit = time_lim
-    # timelim_cb.acceptablegap = optim_lim
-    # timelim_cb.aborted = False
+    timelim_cb = cpx.register_callback(TimeLimitCallback)
+    timelim_cb.starttime = cpx.get_time()
+    timelim_cb.timelimit = time_lim
+    timelim_cb.acceptablegap = optim_lim
+    timelim_cb.aborted = False
 
 
     # Create variables. We have variables

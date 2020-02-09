@@ -40,7 +40,7 @@ show_results = function(customer.df, facility.df, connect, open, numSizes, ...) 
   for (i in 1:nrow(connect)) {
     f = FALSE
     for (j in 1:ncol(connect)) {
-      if (connect[i,j]) {
+      if (connect[i,j] > 0.9) {
         f = TRUE
         k = j %% mod
         if (k == 0) {
@@ -62,7 +62,7 @@ show_results = function(customer.df, facility.df, connect, open, numSizes, ...) 
   sizes = c(5, 10, 15)
   i = 1
   for (i in i:length(open)) {
-    if (open[i]) {
+    if (open[i] > 0.9) {
       k = i %% mod
       if (k == 0) {
         k = mod
