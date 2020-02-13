@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+import time
 
 import cplex
 from cplex.callbacks import MIPInfoCallback
@@ -96,7 +97,10 @@ def read_and_partition():
     parition(cost_c, cost_f, capacity, num_customers, sizes)
 
 
-def partition(cost_c, cost_f, capacity, customers, sizes, sol_lim=10, time_lim=3*60*60, optim_lim=0.1, emphasis=0):
+def partition(cost_c, cost_f, capacity, customers, sizes, sol_lim=20, time_lim=3*60*60, optim_lim=0.1, emphasis=3):
+
+
+
     print('Partitioning the network...', flush=True)
 
     num_f = len(cost_f)
@@ -120,20 +124,28 @@ def partition(cost_c, cost_f, capacity, customers, sizes, sol_lim=10, time_lim=3
     # if not feas:
     #     cpx.parameters.preprocessing.relax.set(0)
     #cpx.parameters.preprocessing.presolve.set(0)
-
-    cpx.parameters.mip.limits.solutions.set(sol_lim)
-    # cpx.parameters.timelimit.set(time_lim)
-    # cpx.parameters.simplex.tolerances.optimality.set(optim_lim)
+    if sol_lim != 0:
+        cpx.parameters.mip.limits.solutions.set(sol_lim)
+    if time_lim != 0:
+        cpx.parameters.timelimit.set(time_lim)
+    if optim_lim != 0:
+        cpx.parameters.simplex.tolerances.optimality.set(optim_lim)
     # cpx.parameters.preprocessing.symmetry=2
+    if emphasis is not None:
+        cpx.parameters.emphasis.mip.set(emphasis)
 
-    cpx.parameters.emphasis.mip.set(emphasis)
+    f = "cplex_" + str(round(time.time()*1000)) + ".log"
+    cpx.set_results_stream(f)
+    cpx.set_warning_stream(f)
+    cpx.set_error_stream(f)
+    cpx.set_log_stream(f)
 
     # register our timer
-    timelim_cb = cpx.register_callback(TimeLimitCallback)
-    timelim_cb.starttime = cpx.get_time()
-    timelim_cb.timelimit = time_lim
-    timelim_cb.acceptablegap = optim_lim
-    timelim_cb.aborted = False
+    # timelim_cb = cpx.register_callback(TimeLimitCallback)
+    # timelim_cb.starttime = cpx.get_time()
+    # timelim_cb.timelimit = time_lim
+    # timelim_cb.acceptablegap = optim_lim
+    # timelim_cb.aborted = False
 
 
     # Create variables. We have variables

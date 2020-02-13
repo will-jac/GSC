@@ -1,5 +1,5 @@
 run_GSC = function(filename=GSC::filename, c = 100, f = 200, em = 100,
-                 time_lim=5*60*60, optim_lim=0.01, emphasis=3, sol_lim=15,
+                 time_lim=3*60*60, optim_lim=0.01, emphasis=3, sol_lim=0,
                  emissions = TRUE, operating = TRUE, data_cache = NULL) {
   if (is.null(data_cache)) {
     a = load_data(filename=filename, c=c, f=f)
