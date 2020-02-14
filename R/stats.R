@@ -64,6 +64,7 @@ store_cap_list = function(results_list) {
 store_cap = function(results_obj, n=3) {
   open = results_obj$open
   connect = results_obj$connect
+  d = results_obj$cust.loc$d
 
   cost = 0
   mod = length(open / n)
@@ -76,7 +77,7 @@ store_cap = function(results_obj, n=3) {
     if (open[j] > 0.9) {
       k = ceiling(j / mod)
       num.cap = num.cap + cap[k]
-      num.con = num.con + sum(connect[,j])
+      num.con = num.con + sum(connect[,j]*d[j])
     }
   }
   return(100 * (num.con / num.cap))
@@ -124,10 +125,18 @@ emissions_cost = function(gsc_batch_obj) {
 type_cost = function(type_obj, gsc_batch_obj) {
   n = length(gsc_batch_obj)
   type_cost = c()
+
+  cust.cost = type_obj$cust.cost
+  fac.cost = type_obj$fac.cost
+
   for (i in 1:n) {
+    connect = gsc_batch_obj[[i]]$connect
+    open = gsc_batch_obj[[i]]$open
+
     type_cost = append(type_cost,
-                       type_cost_customer(type_obj, gsc_batch_obj[[i]])
-                       + type_cost_facility(type_obj, gsc_batch_obj[[i]]))
+                       sum(connect*cust.cost) + sum(open*t(fac.cost)))
+  #                     type_cost_customer(type_obj, gsc_batch_obj[[i]])
+  #                     + type_cost_facility(type_obj, gsc_batch_obj[[i]]))
   }
   return(type_cost);
 }
@@ -137,12 +146,11 @@ type_cost_customer = function(type_obj, gsc_obj) {
   cust.cost = type_obj$cust.cost
   connect = gsc_obj$connect
   cost = 0
-
   for (i in 1:nrow(connect)) {
     for (j in 1:ncol(connect)) {
       if (connect[i,j] > 0.9) {
         cost = cost + as.double(cust.cost[i,j])
-        break
+        next
       }
     }
   }
@@ -151,13 +159,14 @@ type_cost_customer = function(type_obj, gsc_obj) {
 
 type_cost_facility = function(type_obj, gsc_obj) {
 
-  fac.cost = type_obj$fac.cost
+  fac.cost = t(type_obj$fac.cost)
   open = gsc_obj$open
   cost = 0
 
   for (i in 1:length(open)) {
     if (open[i] > 0.9) {
       cost = cost + as.double(fac.cost[i])
+      next
     }
   }
 

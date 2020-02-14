@@ -21,14 +21,16 @@ run_GSC = function(filename=GSC::filename, c = 100, f = 200, em = 100,
     package$EMISSIONS_PRICE_TON=0
   }
 
-  b = compute_diss(a$customer.df, a$facility.df)
+  b = GSC::compute_diss(a$customer.df, a$facility.df)
 
-  reticulate::source_python(paste(system.file(package="GSC"), "partition.py", sep="/"))
+  #reticulate::source_python(paste(system.file(package="GSC"), "partition.py", sep="/"))
 
-  c = partition(b$c, as.vector(t(b$f)), as.vector(t(b$s)), as.vector(b$d), 3, sol_lim, time_lim, optim_lim, emphasis)
+  #c = partition(b$c, as.vector(t(b$f)), as.vector(t(b$s)), as.vector(b$d), 3, sol_lim, time_lim, optim_lim, emphasis)
+
   to_ret = list('cust.loc'=a$customer.df, 'fac.loc'=a$facility.df,
-                'connect' = c$connect, 'open' = c$open,
-                'cost'=c$cost, 'em.cost' = package$EMISSIONS_PRICE_TON,
+                #'connect' = c$connect, 'open' = c$open,
+                #'cost'=c$cost,
+                'em.cost' = package$EMISSIONS_PRICE_TON,
                 'cust.cost' = b$c, 'fac.cost' = b$f)
 
   return (to_ret)
@@ -53,11 +55,14 @@ run_GSC = function(filename=GSC::filename, c = 100, f = 200, em = 100,
 batch = function(em_seq = seq(10, 300, 10), ...) {
   n = length(em_seq)
   result = vector(mode='list', length=n + 2)
-  result[[1]] = GSC::run_GSC(operating = TRUE, emissions = FALSE, ...)
+  result[[1]] = GSC::run_GSC(operating = TRUE, emissions = FALSE, em=0, ...)
   if (! is.null(em_seq) ) {
     for (i in 1:n) {
       result[[i+1]] = GSC::run_GSC(em = em_seq[i], ...)
     }
+  }
+  else {
+    n=0
   }
   result[[n+2]] = GSC::run_GSC(em=1, operating = FALSE, emissions = TRUE, ...)
   return(result)
@@ -84,20 +89,22 @@ run_simulations = function(i=1, filename=GSC::filename, c=100, f=125,
                            extent=raster::extent(c(150,200,2000,2050)),
                            base=TRUE, car=TRUE, truck=TRUE, car_truck=TRUE, fuel=TRUE,
                            low_elec=TRUE, high_elec=TRUE, high_rent=TRUE, low_e_high_r=TRUE,
-                           store_fuel=TRUE, store_fuel_rent=TRUE,...) {
+                           store_fuel=TRUE, store_fuel_rent=TRUE, data_cache=NULL,...) {
   library(GSC)
 
-  data_cache = load_data(filename=filename, c=c, f=f, extent = extent)
+  if (is.null(data_cache)) {
+    data_cache = load_data(filename=filename, c=c, f=f, extent = extent)
+  }
   GSC::reset()
   to_return = list()
 
   if (base) {
-  base = batch(c=c, f=f, data_cache=data_cache, ...)
+  base = GSC::batch(data_cache=data_cache, ...)
   saveRDS(base, paste("r", i, "base.rds", sep="_"))
   GSC::reset()
   }
   if (car) {
-  car = vehicle_batch(car_coef = 1/2, c=c, f=f, data_cache=data_cache, ...)
+  car = GSC::vehicle_batch(car_coef = 1/2, data_cache=data_cache, ...)
   saveRDS(car, paste("r", i, "car.rds", sep="_"))
   GSC::reset()
   }
@@ -107,42 +114,42 @@ run_simulations = function(i=1, filename=GSC::filename, c=100, f=125,
   GSC::reset()
   }
   if (car_truck) {
-  car_truck = vehicle_batch(truck_coef = 1/2, car_coef = 1/2, c=c, f=f, data_cache=data_cache,...)
+  car_truck = vehicle_batch(truck_coef = 1/2, car_coef = 1/2, data_cache=data_cache,...)
   saveRDS(car_truck, paste("r", i, "car_truck.rds", sep="_"))
   GSC::reset()
   }
   if (fuel) {
-  fuel = vehicle_batch(car_fuel_coef = 2, truck_fuel_coef = 2, c=c, f=f, data_cache=data_cache,...)
+  fuel = vehicle_batch(car_fuel_coef = 2, truck_fuel_coef = 2, data_cache=data_cache,...)
   saveRDS(fuel, paste("r", i, "fuel.rds", sep="_"))
   GSC::reset()
   }
   if (low_elec) {
-  low_elec = store_batch(store_e = 60, c=c, f=f, data_cache=data_cache,...)
+  low_elec = store_batch(store_e = 60, data_cache=data_cache,...)
   saveRDS(low_elec, paste("r", i, "low_elec.rds", sep="_"))
   GSC::reset()
   }
   if (high_elec) {
-  high_elec = store_batch(store_e = 183.9, c=c, f=f, data_cache=data_cache,...)
+  high_elec = store_batch(store_e = 183.9, data_cache=data_cache,...)
   saveRDS(high_elec, paste("r", i, "high_elec.rds", sep="_"))
   GSC::reset()
   }
   if (high_rent) {
-  high_rent = store_batch(rent = 425.7, c=c, f=f, data_cache=data_cache,...)
+  high_rent = store_batch(rent = 425.7, data_cache=data_cache,...)
   saveRDS(high_rent, paste("r", i, "high_rent.rds", sep="_"))
   GSC::reset()
   }
   if (low_e_high_r) {
-  low_e_high_r = store_batch(rent=425.7, store_e=60, c=c, f=f, data_cache=data_cache,...)
+  low_e_high_r = store_batch(rent=425.7, store_e=60, data_cache=data_cache,...)
   saveRDS(low_e_high_r, paste("r", i, "low_e_high_r.rds", sep="_"))
   GSC::reset()
   }
   if (store_fuel) {
-  store_fuel = store_batch(store_e = 304, store_p_f = 55.4, c=c, f=f, data_cache=data_cache,...)
+  store_fuel = store_batch(store_e = 304, store_p_f = 55.4, data_cache=data_cache,...)
   saveRDS(store_fuel, paste("r", i, "store_fuel.rds", sep="_"))
   GSC::reset()
   }
   if (store_fuel_rent) {
-  store_fuel_rent = store_batch(rent=425.7, store_e = 304, store_p_f = 55.4, c=c, f=f, data_cache=data_cache,...)
+  store_fuel_rent = store_batch(rent=425.7, store_e = 304, store_p_f = 55.4, data_cache=data_cache,...)
   saveRDS(store_fuel_rent, paste("r", i, "store_fuel_rent.rds", sep="_"))
   GSC::reset()
   }
