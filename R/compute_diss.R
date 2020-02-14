@@ -105,10 +105,10 @@ compute_diss = function(connect.df, facility.df) {
     facility.size = cbind(facility.size, get_store_capacities())
   }
 
-  write.csv(as.matrix(connect), file="connect_cost.csv", row.names = FALSE)
-  write.csv(as.matrix(facility.cost), file="facility_cost.csv", row.names = FALSE)
-  write.csv(as.matrix(facility.size), file="facility_capacity.csv", row.names = FALSE)
-  write.csv(as.matrix(connect.d.df), file="customer_size.csv", row.names=FALSE)
+  #write.csv(as.matrix(connect), file="connect_cost.csv", row.names = FALSE)
+  #write.csv(as.matrix(facility.cost), file="facility_cost.csv", row.names = FALSE)
+  #write.csv(as.matrix(facility.size), file="facility_capacity.csv", row.names = FALSE)
+  #write.csv(as.matrix(connect.d.df), file="customer_size.csv", row.names=FALSE)
 
   return (list('f' = as.matrix(facility.cost), 'c'=as.matrix(connect), 's'=as.matrix(facility.size), 'd' = as.matrix(connect.d.df)))
 }

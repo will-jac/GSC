@@ -23,6 +23,7 @@ run_GSC = function(filename=GSC::filename, c = 100, f = 200, em = 100,
 
   b = GSC::compute_diss(a$customer.df, a$facility.df)
 
+  reticulate::source_python(paste(system.file(package="GSC"), "partition.py", sep="/"))
 
   c = partition(b$c, as.vector(t(b$f)), as.vector(t(b$s)), as.vector(b$d), 3, sol_lim, time_lim, optim_lim, emphasis)
 
@@ -90,7 +91,6 @@ run_simulations = function(i=1, filename=GSC::filename, c=100, f=125,
                            low_elec=TRUE, high_elec=TRUE, high_rent=TRUE, low_e_high_r=TRUE,
                            store_fuel=TRUE, store_fuel_rent=TRUE, data_cache=NULL,...) {
   library(GSC)
-  reticulate::source_python(paste(system.file(package="GSC"), "partition.py", sep="/"))
 
 
   if (is.null(data_cache)) {
