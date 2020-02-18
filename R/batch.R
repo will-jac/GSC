@@ -23,13 +23,13 @@ run_GSC = function(filename=GSC::filename, c = 100, f = 200, em = 100,
 
   b = GSC::compute_diss(a$customer.df, a$facility.df)
 
-  reticulate::source_python(paste(system.file(package="GSC"), "partition.py", sep="/"))
+  #reticulate::source_python(paste(system.file(package="GSC"), "partition.py", sep="/"))
 
-  c = partition(b$c, as.vector(t(b$f)), as.vector(t(b$s)), as.vector(b$d), 3, sol_lim, time_lim, optim_lim, emphasis)
+  #c = partition(b$c, as.vector(t(b$f)), as.vector(t(b$s)), as.vector(b$d), 3, sol_lim, time_lim, optim_lim, emphasis)
 
   to_ret = list('cust.loc'=a$customer.df, 'fac.loc'=a$facility.df,
-                'connect' = c$connect, 'open' = c$open,
-                'cost'=c$cost,
+                #'connect' = c$connect, 'open' = c$open,
+                #'cost'=c$cost,
                 'em.cost' = package$EMISSIONS_PRICE_TON,
                 'cust.cost' = b$c, 'fac.cost' = b$f)
 
@@ -52,19 +52,25 @@ run_GSC = function(filename=GSC::filename, c = 100, f = 200, em = 100,
 #' @export
 #'
 #' results = batch()
-batch = function(em_seq = seq(10, 300, 10), ...) {
+batch = function(em_seq = seq(10, 300, 10), index=1, save=FALSE, ...) {
   n = length(em_seq)
   result = vector(mode='list', length=n + 2)
   result[[1]] = GSC::run_GSC(operating = TRUE, emissions = FALSE, em=0, ...)
+  if (save)
+    saveRDS(result[[i+1]], paste("r_", index, "_op.rds", sep=""))
   if (! is.null(em_seq) ) {
     for (i in 1:n) {
       result[[i+1]] = GSC::run_GSC(em = em_seq[i], ...)
+      if (save)
+        saveRDS(result[[i+1]], paste("r_", index, "_", em_seq[i], ".rds", sep=""))
     }
   }
   else {
     n=0
   }
   result[[n+2]] = GSC::run_GSC(em=1, operating = FALSE, emissions = TRUE, ...)
+  if (save)
+    saveRDS(result[[i+1]], paste("r_", index, "_em.rds", sep=""))
   return(result)
 }
 

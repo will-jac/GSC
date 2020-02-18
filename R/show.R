@@ -88,7 +88,7 @@ show_op_gap = function(stats_obj, d=1, r=1) {
 
 show_em_cost_over_baseline = function(stats_obj, d=1, r=1) {
   n = length(stats_obj[[1]]$em_cost)
-  base = stats_obj[[1]]$em_cost[n]
+  base = as.double(stats_obj[[1]]$em_cost[n])
   s = c()
   for (i in 1:length(stats_obj)) {
     a = as.double(stats_obj[[i]]$em_cost[n]) / base
@@ -107,7 +107,7 @@ show_em_cost_over_baseline = function(stats_obj, d=1, r=1) {
 
 show_op_cost_over_baseline = function(stats_obj, d=1, r=1) {
   n = length(stats_obj[[1]]$op_cost)
-  base = stats_obj[[1]]$op_cost[1]
+  base = as.double(stats_obj[[1]]$op_cost[1])
   s = c()
   for (i in 1:length(stats_obj)) {
     a = as.double(stats_obj[[i]]$op_cost[1]) / base

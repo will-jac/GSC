@@ -111,9 +111,9 @@ num_sizes = function() {
 #' @param q load carried by the vehicle
 #' @keywords vehichle car truck cost
 #' @return the vehicle cost
-vehicle_cost = function(v, f, p_f, e, p_e, q) {
+vehicle_cost = function(v, v_f, p_f, e, p_e, q) {
 
-  return((v+(f*(p_f+e*p_e)))/q)
+  return((v+(v_f*(p_f+e*p_e)))/q)
 }
 
 #'calculates the cost for a car, given a distance Units: $ / (Kg*Km)
@@ -163,8 +163,8 @@ truck_capacity = function() {
 #' @param p_e price of emissions
 #' @keywords store cost
 #' @return the space cost
-space_cost = function(v, f, p_f, e, p_e, q=1) {
-  return((v+(f*(p_f+e*p_e))) / q)
+space_cost = function(v, v_f, p_f, e, p_e, q=1) {
+  return((v+(v_f*(p_f+e*p_e))) / q)
 }
 
 

@@ -10,14 +10,16 @@ show_results_obj = function(result_object, ...) {
   show_results(result_object$cust.loc, result_object$fac.loc, result_object$connect, result_object$open, 3, ...)
 }
 
-show_results = function(customer.df, facility.df, connect, open, numSizes, ...) {
+show_results = function(customer.df, facility.df, connect, open, numSizes, sample=FALSE, ...) {
 
   plot(customer.df$x, customer.df$y, asp=1, type = "n", ...)
 
   mod = length(facility.df$x)
 
-  colors = rainbow(mod)
-
+  if (sample)
+    colors = sample(rainbow(mod))
+  else
+    colors = rainbow(mod)
   # display customers connecting
   ## get an array of sizes to index into
   ## we'll be indexing into this via the d variable
@@ -60,8 +62,7 @@ show_results = function(customer.df, facility.df, connect, open, numSizes, ...) 
 
   # display the open facilities
   sizes = c(5, 10, 15)
-  i = 1
-  for (i in i:length(open)) {
+  for (i in 1:length(open)) {
     if (open[i] > 0.9) {
       k = i %% mod
       if (k == 0) {

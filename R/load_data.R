@@ -1,14 +1,20 @@
 filename = "C:/Users/Jack/College/Fall2019/Green-Supply-Chain/code/data/geotiff/hrsl_pri_pop.tif"
 
 load_data = function(filename, c=100, f=200, dropZeros=TRUE, extent=NULL,...) {
-  print("loading data")
-  # look in the current directory
   data.raster <- raster::raster(filename)
   data.raster = raster::readAll(data.raster)
   crs = "+proj=utm +zone=20 +ellps=clrk66 +towgs84=11,72,-101,0,0,0,0 +units=km +no_defs"
 
   # project it into km!
   data.raster <-raster::projectRaster(data.raster, crs=crs)
+
+  return(load_data_raster(data.raster, c=c, f=f, dropZeros=dropZeros, extent=extent, ...))
+}
+
+load_data_raster = function(data.raster, c=100, f=200, dropZeros=TRUE, extent=NULL, ...) {
+
+  print("loading data")
+
 
   # should we crop?
   if (! is.null(extent)) {
