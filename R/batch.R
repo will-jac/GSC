@@ -52,12 +52,14 @@ run_GSC = function(filename=GSC::filename, c = 100, f = 200, em = 100,
 #' @export
 #'
 #' results = batch()
-batch = function(em_seq = seq(10, 300, 10), index=1, save=FALSE, ...) {
+batch = function(em_seq = seq(10, 300, 10), index=1, save=FALSE, emissions=TRUE, operating=TRUE, ...) {
   n = length(em_seq)
   result = vector(mode='list', length=n + 2)
-  result[[1]] = GSC::run_GSC(operating = TRUE, emissions = FALSE, em=0, ...)
-  if (save)
-    saveRDS(result[[i+1]], paste("r_", index, "_op.rds", sep=""))
+  if (operating) {
+    result[[1]] = GSC::run_GSC(operating = TRUE, emissions = FALSE, em=0, ...)
+    if (save)
+      saveRDS(result[[i+1]], paste("r_", index, "_op.rds", sep=""))
+  }
   if (! is.null(em_seq) ) {
     for (i in 1:n) {
       result[[i+1]] = GSC::run_GSC(em = em_seq[i], ...)
@@ -68,9 +70,11 @@ batch = function(em_seq = seq(10, 300, 10), index=1, save=FALSE, ...) {
   else {
     n=0
   }
-  result[[n+2]] = GSC::run_GSC(em=1, operating = FALSE, emissions = TRUE, ...)
-  if (save)
-    saveRDS(result[[i+1]], paste("r_", index, "_em.rds", sep=""))
+  if (emissions) {
+    result[[n+2]] = GSC::run_GSC(em=1, operating = FALSE, emissions = TRUE, ...)
+    if (save)
+      saveRDS(result[[i+1]], paste("r_", index, "_em.rds", sep=""))
+  }
   return(result)
 }
 
