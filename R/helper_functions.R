@@ -131,9 +131,11 @@ car_cost = function(d) {
     package$car_q))
 }
 
-set_coef = function(car_coef = 1, truck_coef = 1) {
+set_coef = function(car_coef = 1, truck_coef = 1, fuel=1) {
   package$car_coef = car_coef
   package$truck_coef = truck_coef
+  package$car_p_f = fuel * package$car_p_f
+  package$truck_p_f = fuel * package$truck_p_f
 }
 
 #'calculates the cost for a truck, given a distance. Units: $ / (Kg*Km)

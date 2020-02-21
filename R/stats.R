@@ -2,11 +2,11 @@
 plot_em_gap = function(gsc_stats_obj) {
   library(ggplot2)
 x = c(seq(0,3100,100))
-gsc_stats_obj = gap_stats
+#gsc_stats_obj = gap_statss
 ggplot() +
   labs(y="Emissions Gap Reduction %", x="$ / metric ton CO^2", title="Emissions Gap Reduction") +
   geom_line(aes(x,gsc_stats_obj$emissions$em_gap, color="baseline")) +
-  geom_line(aes(x,gsc_stats_obj$car      $em_gap,       color="car")) +
+  geom_line(aes(x,gsc_stats_obj$car      $em_gap, color="car")) +
   geom_line(aes(x,gsc_stats_obj$truck    $em_gap, color="truck")) +
   geom_line(aes(x,gsc_stats_obj$car_truck$em_gap, color="car_truck")) +
   geom_line(aes(x,gsc_stats_obj$fuel     $em_gap, color="fuel"))
