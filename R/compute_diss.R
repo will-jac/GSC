@@ -1,5 +1,5 @@
 
-compute_diss = function(connect.df, facility.df) {
+compute_diss = function(connect.df, facility.df, write_data = FALSE) {
 
   print(package$OPERATING_COST_INDICATOR)
   print(package$EMISSIONS_PRICE_TON)
@@ -41,7 +41,7 @@ compute_diss = function(connect.df, facility.df) {
   connect.d.df = subset(connect.df, TRUE, select = c(d))
   connect.mat = as.matrix(subset(connect.df, TRUE, select = -c(d)))
   print("...connect matrix initialized")
-  #write.csv(connect.mat, file="connect_cost_temp1.csv", row.names = FALSE)
+  write.csv(connect.mat, file="car_distance_matrix.csv", row.names = FALSE)
 
   connect.mat = as.matrix(pdist::pdist(connect.mat, facility.mat))
 
@@ -105,11 +105,12 @@ compute_diss = function(connect.df, facility.df) {
     facility.size = cbind(facility.size, get_store_capacities())
   }
 
-  #write.csv(as.matrix(connect), file="connect_cost.csv", row.names = FALSE)
-  #write.csv(as.matrix(facility.cost), file="facility_cost.csv", row.names = FALSE)
-  #write.csv(as.matrix(facility.size), file="facility_capacity.csv", row.names = FALSE)
-  #write.csv(as.matrix(connect.d.df), file="customer_size.csv", row.names=FALSE)
-
+  if (write_data) {
+  write.csv(as.matrix(connect), file="connect_cost.csv", row.names = FALSE)
+  write.csv(as.matrix(facility.cost), file="facility_cost.csv", row.names = FALSE)
+  write.csv(as.matrix(facility.size), file="facility_capacity.csv", row.names = FALSE)
+  write.csv(as.matrix(connect.d.df), file="customer_size.csv", row.names=FALSE)
+  }
   return (list('f' = as.matrix(facility.cost), 'c'=as.matrix(connect), 's'=as.matrix(facility.size), 'd' = as.matrix(connect.d.df)))
 }
 

@@ -73,7 +73,7 @@ batch = function(em_seq = seq(10, 300, 10), index=1, save=FALSE, emissions=TRUE,
   if (emissions) {
     result[[n+2]] = GSC::run_GSC(em=1, operating = FALSE, emissions = TRUE, ...)
     if (save)
-      saveRDS(result[[n+1]], paste("r_", index, "_em.rds", sep=""))
+      saveRDS(result[[n+2]], paste("r_", index, "_em.rds", sep=""))
   }
   return(result)
 }

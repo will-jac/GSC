@@ -14,3 +14,13 @@ gsc = function(filename=GSC::filename, c = 30, f = 15, op = 1, em = 1, time_lim=
   GSC::show_results(a$customer.df, a$facility.df, c$connect, c$open, 3)
   return(list('cust.loc'=a$customer.df, 'fac.loc'=a$facility.df, 'connect'=c$connect, 'open'=c$open, 'cost'=c$cost, 'cust.cost' = b$c, 'fac.cost' = b$f))
 }
+
+
+gsc_transform_data = function(filename=GSC::filename,
+               c = 100, f = 200, em = 100,
+               emissions = TRUE, operating = TRUE)
+{
+  a = GSC::load_data(filename, f, c)
+  b = GSC::compute_diss(a$customer.df, a$facility.df, TRUE)
+  print("done")
+}
