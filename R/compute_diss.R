@@ -9,10 +9,10 @@ compute_diss = function(connect.df, facility.df, write_data = FALSE) {
 
   ## ensure the problem is (probably) solvable
   if (length(facility.df$x) * max_store_size <= sum(connect.df$d)) {
-    warn("There may not be enough facilities to address every customer!")
+    print("There may not be enough facilities to address every customer!")
   }
   if (sum(as.vector(connect.df$d) > max_store_size) > 0) {
-    warn("There are some customer nodes with more people than the max size of a store!")
+    print("There are some customer nodes with more people than the max size of a store!")
   }
 
   period = 1 # number of periods in a year - cachon defines this to be 1, so we re-use that
@@ -41,8 +41,9 @@ compute_diss = function(connect.df, facility.df, write_data = FALSE) {
   connect.d.df = subset(connect.df, TRUE, select = c(d))
   connect.mat = as.matrix(subset(connect.df, TRUE, select = -c(d)))
   print("...connect matrix initialized")
-  write.csv(connect.mat, file="car_distance_matrix.csv", row.names = FALSE)
-
+  if (write_data) {
+    write.csv(connect.mat, file="car_distance_matrix.csv", row.names = FALSE)
+  }
   connect.mat = as.matrix(pdist::pdist(connect.mat, facility.mat))
 
   print("... diss matrix done")

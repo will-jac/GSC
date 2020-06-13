@@ -1,5 +1,5 @@
 gsc = function(filename=GSC::filename, c = 30, f = 15, op = 1, em = 1, time_lim=60*60, optim_lim=0.01, emphasis=3, sol_lim=10) {
-  a = GSC::load_data(filename, f, c)
+  a = GSC::load_data(filename, c, f)
   b = GSC::compute_diss(a$customer.df, a$facility.df)
   reticulate::source_python(paste(system.file(package="GSC"), "partition.py", sep="/"))
   # We need to transpose the matrixes that get transformed into vectors first
@@ -18,9 +18,9 @@ gsc = function(filename=GSC::filename, c = 30, f = 15, op = 1, em = 1, time_lim=
 
 gsc_transform_data = function(filename=GSC::filename,
                c = 100, f = 200, em = 100,
-               emissions = TRUE, operating = TRUE)
+               emissions = TRUE, operating = TRUE, ...)
 {
-  a = GSC::load_data(filename, f, c)
+  a = GSC::load_data(filename, c, f, ...)
   b = GSC::compute_diss(a$customer.df, a$facility.df, TRUE)
   print("done")
 }
