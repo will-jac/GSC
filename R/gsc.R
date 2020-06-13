@@ -23,4 +23,5 @@ gsc_transform_data = function(filename=GSC::filename,
   a = GSC::load_data(filename, c, f, ...)
   b = GSC::compute_diss(a$customer.df, a$facility.df, TRUE)
   print("done")
+  return(b)
 }
